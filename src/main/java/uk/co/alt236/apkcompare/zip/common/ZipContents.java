@@ -3,6 +3,7 @@ package uk.co.alt236.apkcompare.zip.common;
 import uk.co.alt236.apkcompare.util.StreamUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +51,18 @@ public class ZipContents {
     public List<Entry> getEntries() {
         parseZipFile();
         return Collections.unmodifiableList(entryList);
+    }
+
+    @Nullable
+    public Entry getEntry(@Nonnull String name) {
+        parseZipFile();
+        for (final Entry entry : entryList) {
+            if (entry.getName().equals(name)) {
+                return entry;
+            }
+        }
+
+        return null;
     }
 
     @Nonnull

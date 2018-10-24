@@ -8,6 +8,7 @@ import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 import java.util.List;
 
 public class ResultsPrinter {
+    private static final String MISSING_VALUE = "[ MISSING ]";
     private static final String LEVEL_1_INDENT = "";
     private static final String LEVEL_2_INDENT = "\t";
     private static final String LEVEL_3_INDENT = "\t\t";
@@ -34,8 +35,11 @@ public class ResultsPrinter {
                 printTitle(block, LEVEL_2_INDENT);
 
                 for (final ResultItem item : block.getResultItems()) {
-                    printTitle(item, LEVEL_3_INDENT);
-                    printItemValues(item);
+                    if ((verbose && item.getSimilarity() == Similarity.IDENTICAL)
+                            || item.getSimilarity() != Similarity.IDENTICAL) {
+                        printTitle(item, LEVEL_3_INDENT);
+                        printItemValues(item);
+                    }
                 }
             }
         }
@@ -54,7 +58,7 @@ public class ResultsPrinter {
     }
 
     private void printItemValues(ResultItem item) {
-        Logger.get().out(LEVEL_4_INDENT + "APK 1: " + item.getValue1());
-        Logger.get().out(LEVEL_4_INDENT + "APK 2: " + item.getValue2());
+        Logger.get().out(LEVEL_4_INDENT + "APK 1: " + (item.getValue1AsString() == null ? MISSING_VALUE : item.getValue1AsString()));
+        Logger.get().out(LEVEL_4_INDENT + "APK 2: " + (item.getValue2AsString() == null ? MISSING_VALUE : item.getValue2AsString()));
     }
 }

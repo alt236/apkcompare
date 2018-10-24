@@ -1,13 +1,8 @@
 package uk.co.alt236.apkcompare.comparators.signature;
 
 import uk.co.alt236.apkcompare.apk.Apk;
-import uk.co.alt236.apkcompare.comparators.ApkComparator;
-import uk.co.alt236.apkcompare.comparators.ResultBlock;
-import uk.co.alt236.apkcompare.comparators.ResultItem;
-import uk.co.alt236.apkcompare.comparators.ResultSection;
+import uk.co.alt236.apkcompare.comparators.*;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
-import uk.co.alt236.apkcompare.util.Colorizer;
-import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 import uk.co.alt236.apkcompare.util.date.IsoISO8601DateParser;
 
 import java.util.ArrayList;
@@ -15,9 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 public class SignatureComparator implements ApkComparator {
-    public SignatureComparator(FileSizeFormatter fileSizeFormatter, Colorizer colorizer, boolean verbose) {
-
-    }
 
     @Override
     public List<ResultSection> compare(Apk apk1, Apk apk2) {
@@ -71,39 +63,39 @@ public class SignatureComparator implements ApkComparator {
 
         final List<ResultItem> retVal = new ArrayList<>();
 
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Subject",
                 cert1 == null ? null : cert1.getSubjectDN().toString(),
                 cert2 == null ? null : cert2.getSubjectDN().toString()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Issuer",
                 cert1 == null ? null : cert1.getIssuerDN().toString(),
                 cert2 == null ? null : cert2.getIssuerDN().toString()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Serial",
                 cert1 == null ? null : cert1.getSerialNumber().toString(),
                 cert2 == null ? null : cert2.getSerialNumber().toString()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Algorithm",
                 cert1 == null ? null : cert1.getSigAlgName(),
                 cert2 == null ? null : cert2.getSigAlgName()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Valid from",
                 cert1 == null ? null : toIsoDate(cert1.getNotBefore()),
                 cert2 == null ? null : toIsoDate(cert2.getNotBefore())));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "Valid to",
                 cert1 == null ? null : toIsoDate(cert1.getNotAfter()),
                 cert2 == null ? null : toIsoDate(cert2.getNotAfter())));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "MD5 Thumb",
                 cert1 == null ? null : cert1.getMd5Thumbprint(),
                 cert2 == null ? null : cert2.getMd5Thumbprint()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "SHA1 Thumb",
                 cert1 == null ? null : cert1.getSha1Thumbprint(),
                 cert2 == null ? null : cert2.getSha1Thumbprint()));
-        retVal.add(new ResultItem(
+        retVal.add(new StringResultItem(
                 "SHA256 Thumb",
                 cert1 == null ? null : cert1.getSha256Thumbprint(),
                 cert2 == null ? null : cert2.getSha256Thumbprint()));

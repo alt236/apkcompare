@@ -5,7 +5,9 @@ import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 import uk.co.alt236.apkcompare.zip.common.ZipContents;
 
+import javax.annotation.Nonnull;
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public class Apk {
@@ -33,5 +35,13 @@ public class Apk {
 
     public void close() {
         zipContents.close();
+    }
+
+    public Entry getEntry(String name) {
+        return zipContents.getEntry(name);
+    }
+
+    public InputStream getEntryStream(@Nonnull Entry entry) {
+        return zipContents.getInputStream(entry);
     }
 }
