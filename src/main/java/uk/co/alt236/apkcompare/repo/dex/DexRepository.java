@@ -17,11 +17,13 @@ public class DexRepository {
     private final ZipContents zipContents;
     private final List<DexFile> dexFiles;
     private final Map<String, DexClass> classMap;
+    private final Set<DexClass> dexClasses;
 
     public DexRepository(final ZipContents zipContents) {
         this.zipContents = zipContents;
         this.dexFiles = new ArrayList<>();
         this.classMap = new HashMap<>();
+        this.dexClasses = new HashSet<>();
     }
 
     public List<DexFile> getDexFiles() {
@@ -30,17 +32,9 @@ public class DexRepository {
     }
 
     public Set<DexClass> getAllClasses() {
-        loadDexFiles();
+        loadDexClasses();
 
-        synchronized (this) {
-            if (classMap.isEmpty()) {
-                dexFiles.stream()
-                        .flatMap(dexFile -> dexFile.getClasses().stream())
-                        .forEach(dexClass -> classMap.put(dexClass.getType(), dexClass));
-            }
-        }
-
-        return new HashSet<>(classMap.values());
+        return Collections.unmodifiableSet(dexClasses);
     }
 
     public long getTotalMethodCount() {
@@ -88,6 +82,13 @@ public class DexRepository {
         return dexFiles.stream().mapToLong(DexFile::getProtoCount).sum();
     }
 
+    @Nullable
+    public DexClass getClassByType(String classType) {
+        loadDexClasses();
+
+        return classMap.get(classType);
+    }
+
     private synchronized void loadDexFiles() {
         if (!dexFiles.isEmpty()) {
             return;
@@ -106,15 +107,21 @@ public class DexRepository {
         }
     }
 
+    private synchronized void loadDexClasses() {
+        loadDexFiles();
+
+        if (!classMap.isEmpty()) {
+            return;
+        }
+
+        dexFiles.stream()
+                .flatMap(dexFile -> dexFile.getClasses().stream())
+                .forEach(dexClass -> classMap.put(dexClass.getType(), dexClass));
+        dexClasses.addAll(new HashSet<>(classMap.values()));
+    }
+
     private List<Entry> getDexFileEntries() {
         return zipContents
                 .getEntries(entry -> !entry.isDirectory() && entry.getName().toLowerCase(Locale.US).endsWith(".dex"));
-    }
-
-    @Nullable
-    public DexClass getClassByType(String classType) {
-        loadDexFiles();
-
-        return classMap.get(classType);
     }
 }
