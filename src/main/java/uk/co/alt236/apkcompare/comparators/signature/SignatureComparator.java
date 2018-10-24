@@ -1,16 +1,15 @@
 package uk.co.alt236.apkcompare.comparators.signature;
 
+import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.ResultItem;
 import uk.co.alt236.apkcompare.comparators.ResultSection;
-import uk.co.alt236.apkcompare.repo.signature.SignatureRepository;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.util.Colorizer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 import uk.co.alt236.apkcompare.util.date.IsoISO8601DateParser;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,13 +20,13 @@ public class SignatureComparator implements ApkComparator {
     }
 
     @Override
-    public List<ResultSection> compare(File file1, File file2) {
+    public List<ResultSection> compare(Apk apk1, Apk apk2) {
         final List<ResultSection> retVal = new ArrayList<>();
-        final SignatureRepository repo1 = new SignatureRepository(file1);
-        final SignatureRepository repo2 = new SignatureRepository(file2);
+        final List<SigningCertificate> certificates1 = apk1.getCertificates();
+        final List<SigningCertificate> certificates2 = apk2.getCertificates();
 
 
-        final List<ResultBlock> signatureComparison = compareCertificateList(repo1.getCertificates(), repo2.getCertificates());
+        final List<ResultBlock> signatureComparison = compareCertificateList(certificates1, certificates2);
         retVal.add(new ResultSection("Certificate Comparison", signatureComparison));
 
         return retVal;

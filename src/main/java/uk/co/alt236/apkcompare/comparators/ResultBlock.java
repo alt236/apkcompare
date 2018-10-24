@@ -23,8 +23,8 @@ public class ResultBlock implements ComparisonResult {
     }
 
     @Override
-    public Status getStatus() {
-        return CollectionStatusEvaluator.evaluate(resultItems);
+    public Similarity getSimilarity() {
+        return CollectionSimilarityEvaluator.evaluate(resultItems);
     }
 
 }

@@ -2,7 +2,7 @@ package uk.co.alt236.apkcompare.comparators;
 
 public interface ComparisonResult {
 
-    Status getStatus();
+    Similarity getSimilarity();
 
     String getTitle();
 

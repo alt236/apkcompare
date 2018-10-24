@@ -28,11 +28,11 @@ public class ResultItem implements ComparisonResult {
     }
 
     @Override
-    public Status getStatus() {
+    public Similarity getSimilarity() {
         if (StringUtils.equals(value1, value2)) {
-            return Status.SAME;
+            return Similarity.IDENTICAL;
         } else {
-            return Status.DIFFERENT;
+            return Similarity.DIFFERENT;
         }
     }
 }

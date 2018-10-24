@@ -1,6 +1,7 @@
 package uk.co.alt236.apkcompare;
 
 import org.apache.commons.cli.*;
+import uk.co.alt236.apkcompare.apk.ApkFactory;
 import uk.co.alt236.apkcompare.cli.CommandHelpPrinter;
 import uk.co.alt236.apkcompare.cli.CommandLineOptions;
 import uk.co.alt236.apkcompare.cli.JarDetails;
@@ -23,7 +24,7 @@ public class Main {
             final File file1 = getFile(cliOptions.getInputFile1());
             final File file2 = getFile(cliOptions.getInputFile2());
 
-            new ApkCompare().compare(cliOptions, file1, file2);
+            new ApkCompare().compare(cliOptions, ApkFactory.from(file1), ApkFactory.from(file2));
         }
     }
 

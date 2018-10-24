@@ -33,8 +33,8 @@ public class ResultsPrinter {
                 for (final ResultItem item : block.getResultItems()) {
                     printTitle(item, LEVEL_3_INDENT);
 
-                    Logger.get().out(LEVEL_4_INDENT + "File 1: " + item.getValue1());
-                    Logger.get().out(LEVEL_4_INDENT + "File 2: " + item.getValue2());
+                    Logger.get().out(LEVEL_4_INDENT + "APK 1: " + item.getValue1());
+                    Logger.get().out(LEVEL_4_INDENT + "APK 2: " + item.getValue2());
                 }
             }
         }
@@ -43,7 +43,7 @@ public class ResultsPrinter {
     private void printTitle(final ComparisonResult result, final String indent) {
         final String finalText;
 
-        if (result.getStatus() == Status.SAME) {
+        if (result.getSimilarity() == Similarity.IDENTICAL) {
             finalText = indent + result.getTitle();
         } else {
             finalText = colorizer.error(indent + result.getTitle());

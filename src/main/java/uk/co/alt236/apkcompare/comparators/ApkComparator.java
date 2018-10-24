@@ -1,8 +1,9 @@
 package uk.co.alt236.apkcompare.comparators;
 
-import java.io.File;
+import uk.co.alt236.apkcompare.apk.Apk;
+
 import java.util.List;
 
 public interface ApkComparator {
-    List<ResultSection> compare(File file1, File file2);
+    List<ResultSection> compare(Apk file1, Apk file2);
 }

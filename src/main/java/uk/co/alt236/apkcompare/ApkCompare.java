@@ -1,5 +1,6 @@
 package uk.co.alt236.apkcompare;
 
+import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.cli.CommandLineOptions;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.ResultSection;
@@ -15,10 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ApkCompare {
-    void compare(CommandLineOptions cli,
-                 File file1,
-                 File file2) {
 
+    void compare(CommandLineOptions cli, Apk apk1, Apk apk2) {
         final boolean isSaveToFileEnabled = cli.getOutputFile() != null;
         final boolean verbose = cli.isVerbose();
         final boolean humanReadableFileSizes = cli.isHumanReadableFileSizes();
@@ -35,14 +34,17 @@ class ApkCompare {
         comparatorList.add(new SignatureComparator(fileSizeFormatter, colorizer, verbose));
 
 
-        Logger.get().out("File 1: " + file1);
-        Logger.get().out("File 2: " + file2);
+        Logger.get().out("APK 1: " + apk1);
+        Logger.get().out("APK 2: " + apk2);
 
         final List<ResultSection> results = new ArrayList<>();
 
         for (final ApkComparator comparator : comparatorList) {
-            results.addAll(comparator.compare(file1, file2));
+            results.addAll(comparator.compare(apk1, apk2));
         }
+
+        apk1.close();
+        apk2.close();
 
         new ResultsPrinter(fileSizeFormatter, colorizer, verbose).print(results);
     }
