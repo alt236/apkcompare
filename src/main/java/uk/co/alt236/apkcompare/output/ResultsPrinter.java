@@ -1,0 +1,54 @@
+package uk.co.alt236.apkcompare.output;
+
+import uk.co.alt236.apkcompare.comparators.*;
+import uk.co.alt236.apkcompare.output.logging.Logger;
+import uk.co.alt236.apkcompare.util.Colorizer;
+import uk.co.alt236.apkcompare.util.FileSizeFormatter;
+
+import java.util.List;
+
+public class ResultsPrinter {
+    private static final String LEVEL_1_INDENT = "";
+    private static final String LEVEL_2_INDENT = "\t";
+    private static final String LEVEL_3_INDENT = "\t\t";
+    private static final String LEVEL_4_INDENT = "\t\t\t";
+
+    private final FileSizeFormatter fileSizeFormatter;
+    private final Colorizer colorizer;
+    private final boolean verbose;
+
+    public ResultsPrinter(FileSizeFormatter fileSizeFormatter, Colorizer colorizer, boolean verbose) {
+        this.fileSizeFormatter = fileSizeFormatter;
+        this.colorizer = colorizer;
+        this.verbose = verbose;
+    }
+
+    public void print(List<ResultSection> results) {
+        for (final ResultSection section : results) {
+            printTitle(section, LEVEL_1_INDENT);
+
+            for (final ResultBlock block : section.getResultBlocks()) {
+                printTitle(block, LEVEL_2_INDENT);
+
+                for (final ResultItem item : block.getResultItems()) {
+                    printTitle(item, LEVEL_3_INDENT);
+
+                    Logger.get().out(LEVEL_4_INDENT + "File 1: " + item.getValue1());
+                    Logger.get().out(LEVEL_4_INDENT + "File 2: " + item.getValue2());
+                }
+            }
+        }
+    }
+
+    private void printTitle(final ComparisonResult result, final String indent) {
+        final String finalText;
+
+        if (result.getStatus() == Status.SAME) {
+            finalText = indent + result.getTitle();
+        } else {
+            finalText = colorizer.error(indent + result.getTitle());
+        }
+
+        Logger.get().out(finalText);
+    }
+}
