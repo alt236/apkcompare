@@ -17,7 +17,10 @@ public class ResultsPrinter {
     private final Colorizer colorizer;
     private final boolean verbose;
 
-    public ResultsPrinter(FileSizeFormatter fileSizeFormatter, Colorizer colorizer, boolean verbose) {
+    public ResultsPrinter(FileSizeFormatter fileSizeFormatter,
+                          Colorizer colorizer,
+                          boolean verbose) {
+
         this.fileSizeFormatter = fileSizeFormatter;
         this.colorizer = colorizer;
         this.verbose = verbose;
@@ -32,9 +35,7 @@ public class ResultsPrinter {
 
                 for (final ResultItem item : block.getResultItems()) {
                     printTitle(item, LEVEL_3_INDENT);
-
-                    Logger.get().out(LEVEL_4_INDENT + "APK 1: " + item.getValue1());
-                    Logger.get().out(LEVEL_4_INDENT + "APK 2: " + item.getValue2());
+                    printItemValues(item);
                 }
             }
         }
@@ -50,5 +51,10 @@ public class ResultsPrinter {
         }
 
         Logger.get().out(finalText);
+    }
+
+    private void printItemValues(ResultItem item) {
+        Logger.get().out(LEVEL_4_INDENT + "APK 1: " + item.getValue1());
+        Logger.get().out(LEVEL_4_INDENT + "APK 2: " + item.getValue2());
     }
 }

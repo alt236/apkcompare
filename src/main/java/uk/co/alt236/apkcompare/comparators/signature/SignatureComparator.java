@@ -40,27 +40,29 @@ public class SignatureComparator implements ApkComparator {
         final List<ResultBlock> blockList = new ArrayList<>();
 
 
-        if (certificates1.size() == certificates2.size()) {
-            compareSameSizeCertificateLists(blockList, certificates1, certificates2);
-        } else {
-            throw new IllegalStateException("Unimplemented");
+        final int maxSize = Math.max(certificates1.size(), certificates2.size());
+
+        for (int i = 0; i < maxSize; i++) {
+            final SigningCertificate cert1;
+            final SigningCertificate cert2;
+
+            if (i < certificates1.size()) {
+                cert1 = certificates1.get(i);
+            } else {
+                cert1 = null;
+            }
+
+            if (i < certificates2.size()) {
+                cert2 = certificates2.get(i);
+            } else {
+                cert2 = null;
+            }
+
+            final List<ResultItem> resultItems = compareCertificates(cert1, cert2);
+            blockList.add(new ResultBlock("Certificate " + (i + 1), resultItems));
         }
 
         return blockList;
-    }
-
-    private void compareSameSizeCertificateLists(List<ResultBlock> blockList,
-                                                 List<SigningCertificate> certificates1,
-                                                 List<SigningCertificate> certificates2) {
-
-
-        for (int i = 0; i < certificates1.size(); i++) {
-            final SigningCertificate cert1 = certificates1.get(i);
-            final SigningCertificate cert2 = certificates2.get(i);
-            final List<ResultItem> resultItems = compareCertificates(cert1, cert2);
-
-            blockList.add(new ResultBlock("Certificate " + (i + 1), resultItems));
-        }
     }
 
 
@@ -69,15 +71,42 @@ public class SignatureComparator implements ApkComparator {
 
         final List<ResultItem> retVal = new ArrayList<>();
 
-        retVal.add(new ResultItem("Subject", cert1.getSubjectDN().toString(), cert2.getSubjectDN().toString()));
-        retVal.add(new ResultItem("Issuer", cert1.getIssuerDN().toString(), cert2.getIssuerDN().toString()));
-        retVal.add(new ResultItem("Serial", cert1.getSerialNumber().toString(), cert2.getSerialNumber().toString()));
-        retVal.add(new ResultItem("Algorithm", cert1.getSigAlgName(), cert2.getSigAlgName()));
-        retVal.add(new ResultItem("Valid from", toIsoDate(cert1.getNotBefore()), toIsoDate(cert2.getNotBefore())));
-        retVal.add(new ResultItem("Valid to", toIsoDate(cert1.getNotAfter()), toIsoDate(cert2.getNotAfter())));
-        retVal.add(new ResultItem("MD5 Thumb", cert1.getMd5Thumbprint(), cert2.getMd5Thumbprint()));
-        retVal.add(new ResultItem("SHA1 Thumb", cert1.getSha1Thumbprint(), cert2.getSha1Thumbprint()));
-        retVal.add(new ResultItem("SHA256 Thumb", cert1.getSha256Thumbprint(), cert2.getSha256Thumbprint()));
+        retVal.add(new ResultItem(
+                "Subject",
+                cert1 == null ? null : cert1.getSubjectDN().toString(),
+                cert2 == null ? null : cert2.getSubjectDN().toString()));
+        retVal.add(new ResultItem(
+                "Issuer",
+                cert1 == null ? null : cert1.getIssuerDN().toString(),
+                cert2 == null ? null : cert2.getIssuerDN().toString()));
+        retVal.add(new ResultItem(
+                "Serial",
+                cert1 == null ? null : cert1.getSerialNumber().toString(),
+                cert2 == null ? null : cert2.getSerialNumber().toString()));
+        retVal.add(new ResultItem(
+                "Algorithm",
+                cert1 == null ? null : cert1.getSigAlgName(),
+                cert2 == null ? null : cert2.getSigAlgName()));
+        retVal.add(new ResultItem(
+                "Valid from",
+                cert1 == null ? null : toIsoDate(cert1.getNotBefore()),
+                cert2 == null ? null : toIsoDate(cert2.getNotBefore())));
+        retVal.add(new ResultItem(
+                "Valid to",
+                cert1 == null ? null : toIsoDate(cert1.getNotAfter()),
+                cert2 == null ? null : toIsoDate(cert2.getNotAfter())));
+        retVal.add(new ResultItem(
+                "MD5 Thumb",
+                cert1 == null ? null : cert1.getMd5Thumbprint(),
+                cert2 == null ? null : cert2.getMd5Thumbprint()));
+        retVal.add(new ResultItem(
+                "SHA1 Thumb",
+                cert1 == null ? null : cert1.getSha1Thumbprint(),
+                cert2 == null ? null : cert2.getSha1Thumbprint()));
+        retVal.add(new ResultItem(
+                "SHA256 Thumb",
+                cert1 == null ? null : cert1.getSha256Thumbprint(),
+                cert2 == null ? null : cert2.getSha256Thumbprint()));
 
         return retVal;
     }
