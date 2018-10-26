@@ -1,7 +1,8 @@
 package uk.co.alt236.apkcompare.comparators.dex;
 
 import uk.co.alt236.apkcompare.apk.Apk;
-import uk.co.alt236.apkcompare.comparators.*;
+import uk.co.alt236.apkcompare.comparators.ApkComparator;
+import uk.co.alt236.apkcompare.comparators.results.*;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 
 import java.util.*;
@@ -46,13 +47,13 @@ public class DexComparator implements ApkComparator {
 
         final ResultItem resultItem;
         if (fileSize1 != fileSize2) {
-            resultItem = new CustomResultItem(
+            resultItem = new ByteCountResultItem(
                     classType,
-                    class1 == null ? null : "Class size: " + fileSize1,
-                    class2 == null ? null : "Class size: " + fileSize2,
-                    Similarity.DIFFERENT);
+                    "Class size",
+                    class1 == null ? null : fileSize1,
+                    class2 == null ? null : fileSize2);
         } else {
-            return new StringResultItem(classType, "[TEST]", "[TEST]");
+            return new StringResultItem(classType, "TEST", "[TEST]", "[TEST]");
 //            final String hash1 = class1 == null ? null : hasher.sha256Hex(apk1.getEntryStream(class1));
 //            final String hash2 = class2 == null ? null : hasher.sha256Hex(apk2.getEntryStream(class2));
 //

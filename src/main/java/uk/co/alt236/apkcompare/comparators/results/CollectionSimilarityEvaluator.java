@@ -1,4 +1,4 @@
-package uk.co.alt236.apkcompare.comparators;
+package uk.co.alt236.apkcompare.comparators.results;
 
 import java.util.Collection;
 import java.util.EnumSet;

@@ -1,6 +1,6 @@
 package uk.co.alt236.apkcompare.output;
 
-import uk.co.alt236.apkcompare.comparators.*;
+import uk.co.alt236.apkcompare.comparators.results.*;
 import uk.co.alt236.apkcompare.output.logging.Logger;
 import uk.co.alt236.apkcompare.util.Colorizer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
@@ -8,7 +8,7 @@ import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 import java.util.List;
 
 public class ResultsPrinter {
-    private static final String MISSING_VALUE = "[ MISSING ]";
+    private static final String MISSING_VALUE = "*** MISSING ***";
     private static final String LEVEL_1_INDENT = "";
     private static final String LEVEL_2_INDENT = "\t";
     private static final String LEVEL_3_INDENT = "\t\t";
@@ -17,6 +17,7 @@ public class ResultsPrinter {
     private final FileSizeFormatter fileSizeFormatter;
     private final Colorizer colorizer;
     private final boolean verbose;
+    private final String colouredMissingValue;
 
     public ResultsPrinter(FileSizeFormatter fileSizeFormatter,
                           Colorizer colorizer,
@@ -25,6 +26,7 @@ public class ResultsPrinter {
         this.fileSizeFormatter = fileSizeFormatter;
         this.colorizer = colorizer;
         this.verbose = verbose;
+        this.colouredMissingValue = colorizer.important(MISSING_VALUE);
     }
 
     public void print(List<ResultSection> results) {
@@ -58,7 +60,21 @@ public class ResultsPrinter {
     }
 
     private void printItemValues(ResultItem item) {
-        Logger.get().out(LEVEL_4_INDENT + "APK 1: " + (item.getValue1AsString() == null ? MISSING_VALUE : item.getValue1AsString()));
-        Logger.get().out(LEVEL_4_INDENT + "APK 2: " + (item.getValue2AsString() == null ? MISSING_VALUE : item.getValue2AsString()));
+        final String value1;
+        final String value2;
+
+        if (item instanceof ByteCountResultItem) {
+            final ByteCountResultItem byteRsult = (ByteCountResultItem) item;
+            final String comparedAttribute = byteRsult.getComparedAttribute() == null ? "" : byteRsult.getComparedAttribute() + ": ";
+
+            value1 = (byteRsult.getValue1() == null ? colouredMissingValue : comparedAttribute + fileSizeFormatter.format(byteRsult.getValue1()));
+            value2 = (byteRsult.getValue2() == null ? colouredMissingValue : comparedAttribute + fileSizeFormatter.format(byteRsult.getValue2()));
+        } else {
+            value1 = (item.getValue1AsString() == null ? colouredMissingValue : item.getValue1AsString());
+            value2 = (item.getValue2AsString() == null ? colouredMissingValue : item.getValue2AsString());
+        }
+
+        Logger.get().out(LEVEL_4_INDENT + "APK 1: " + value1);
+        Logger.get().out(LEVEL_4_INDENT + "APK 2: " + value2);
     }
 }

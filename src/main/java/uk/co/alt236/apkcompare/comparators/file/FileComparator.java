@@ -1,7 +1,8 @@
 package uk.co.alt236.apkcompare.comparators.file;
 
 import uk.co.alt236.apkcompare.apk.Apk;
-import uk.co.alt236.apkcompare.comparators.*;
+import uk.co.alt236.apkcompare.comparators.ApkComparator;
+import uk.co.alt236.apkcompare.comparators.results.*;
 import uk.co.alt236.apkcompare.util.Hasher;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 
@@ -55,16 +56,16 @@ public class FileComparator implements ApkComparator {
 
         final ResultItem resultItem;
         if (fileSize1 != fileSize2) {
-            resultItem = new CustomResultItem(
+            resultItem = new ByteCountResultItem(
                     name,
-                    entry1 == null ? null : "File size: " + fileSize1,
-                    entry2 == null ? null : "File size: " + fileSize2,
-                    Similarity.DIFFERENT);
+                    "File size",
+                    entry1 == null ? null : fileSize1,
+                    entry2 == null ? null : fileSize2);
         } else {
             final String hash1 = entry1 == null ? null : hasher.sha256Hex(apk1.getEntryStream(entry1));
             final String hash2 = entry2 == null ? null : hasher.sha256Hex(apk2.getEntryStream(entry2));
 
-            resultItem = new StringResultItem(name, hash1, hash2);
+            resultItem = new StringResultItem(name, "SHA256", hash1, hash2);
         }
 
 
