@@ -39,8 +39,8 @@ class ApkCompare {
         comparatorList.add(new FileContentsComparator());
         comparatorList.add(new DexComparator());
 
-        Logger.get().out("APK 1: " + apk1);
-        Logger.get().out("APK 2: " + apk2);
+        Logger.get().out("APK 1: " + apk1.getFile());
+        Logger.get().out("APK 2: " + apk2.getFile());
 
         final List<ResultSection> results = new ArrayList<>();
 
