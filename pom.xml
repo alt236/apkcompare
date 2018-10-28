@@ -64,6 +64,10 @@
         </plugins>
     </build>
 
+    <properties>
+        <version.smali>2.2.5</version.smali>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -86,7 +90,13 @@
         <dependency>
             <groupId>org.smali</groupId>
             <artifactId>dexlib2</artifactId>
-            <version>2.2.5</version>
+            <version>${version.smali}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.smali</groupId>
+            <artifactId>baksmali</artifactId>
+            <version>${version.smali}</version>
         </dependency>
 
         <dependency>

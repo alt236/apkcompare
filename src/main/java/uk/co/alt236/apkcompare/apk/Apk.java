@@ -2,6 +2,7 @@ package uk.co.alt236.apkcompare.apk;
 
 import uk.co.alt236.apkcompare.repo.dex.DexRepository;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
+import uk.co.alt236.apkcompare.repo.dex.model.DexFile;
 import uk.co.alt236.apkcompare.repo.signature.SignatureRepository;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.zip.common.Entry;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Apk {
     private final ZipContents zipContents;
@@ -63,5 +65,9 @@ public class Apk {
     @Nullable
     public DexClass getClassByType(String classType) {
         return dexRepository.getClassByType(classType);
+    }
+
+    public List<String> getDexFileNames() {
+        return dexRepository.getDexFiles().stream().map(DexFile::getName).collect(Collectors.toList());
     }
 }

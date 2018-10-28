@@ -2,8 +2,12 @@ package uk.co.alt236.apkcompare.comparators.dex;
 
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
-import uk.co.alt236.apkcompare.comparators.results.*;
+import uk.co.alt236.apkcompare.comparators.results.ByteCountResultItem;
+import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
+import uk.co.alt236.apkcompare.comparators.results.ResultItem;
+import uk.co.alt236.apkcompare.comparators.results.ResultSection;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
+import uk.co.alt236.apkcompare.util.Hasher;
 
 import java.util.*;
 
@@ -20,6 +24,7 @@ public class DexComparator implements ApkComparator {
     }
 
     private List<ResultBlock> compareClasses(Apk apk1, Apk apk2) {
+        final SmaliComparator smaliComparator = new SmaliComparator(new Hasher(), apk1, apk2);
         final List<ResultBlock> retVal = new ArrayList<>();
         final List<ResultItem> resultItems = new ArrayList<>();
 
@@ -27,7 +32,7 @@ public class DexComparator implements ApkComparator {
 
         for (final String classType : classTypeList) {
 
-            final ResultItem resultItem = compare(classType, apk1, apk2);
+            final ResultItem resultItem = compare(classType, apk1, apk2, smaliComparator);
             resultItems.add(resultItem);
         }
 
@@ -37,7 +42,8 @@ public class DexComparator implements ApkComparator {
 
     private ResultItem compare(String classType,
                                Apk apk1,
-                               Apk apk2) {
+                               Apk apk2,
+                               SmaliComparator smaliComparator) {
 
         final DexClass class1 = apk1.getClassByType(classType);
         final DexClass class2 = apk2.getClassByType(classType);
@@ -53,11 +59,7 @@ public class DexComparator implements ApkComparator {
                     class1 == null ? null : fileSize1,
                     class2 == null ? null : fileSize2);
         } else {
-            return new StringResultItem(classType, "TEST", "[TEST]", "[TEST]");
-//            final String hash1 = class1 == null ? null : hasher.sha256Hex(apk1.getEntryStream(class1));
-//            final String hash2 = class2 == null ? null : hasher.sha256Hex(apk2.getEntryStream(class2));
-//
-//            resultItem = new StringResultItem(name, hash1, hash2);
+            return smaliComparator.compareClasses(classType);
         }
 
 
