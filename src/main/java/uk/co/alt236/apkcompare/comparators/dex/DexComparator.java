@@ -7,6 +7,7 @@ import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.ResultItem;
 import uk.co.alt236.apkcompare.comparators.results.ResultSection;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
+import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.util.Hasher;
 
 import java.util.*;
@@ -27,10 +28,9 @@ public class DexComparator implements ApkComparator {
         final SmaliComparator smaliComparator = new SmaliComparator(new Hasher(), apk1, apk2);
         final List<ResultBlock> retVal = new ArrayList<>();
         final List<ResultItem> resultItems = new ArrayList<>();
+        final List<DexClassType> classTypeList = getClassTypeList(apk1.getClasses(), apk2.getClasses());
 
-        final List<String> classTypeList = getClassTypeList(apk1.getClasses(), apk2.getClasses());
-
-        for (final String classType : classTypeList) {
+        for (final DexClassType classType : classTypeList) {
 
             final ResultItem resultItem = compare(classType, apk1, apk2, smaliComparator);
             resultItems.add(resultItem);
@@ -40,7 +40,7 @@ public class DexComparator implements ApkComparator {
         return retVal;
     }
 
-    private ResultItem compare(String classType,
+    private ResultItem compare(DexClassType classType,
                                Apk apk1,
                                Apk apk2,
                                SmaliComparator smaliComparator) {
@@ -54,7 +54,7 @@ public class DexComparator implements ApkComparator {
         final ResultItem resultItem;
         if (fileSize1 != fileSize2) {
             resultItem = new ByteCountResultItem(
-                    classType,
+                    classType.getType(),
                     "Class size",
                     class1 == null ? null : fileSize1,
                     class2 == null ? null : fileSize2);
@@ -67,9 +67,9 @@ public class DexComparator implements ApkComparator {
     }
 
 
-    private List<String> getClassTypeList(Set<DexClass> apk1Classes,
-                                          Set<DexClass> apk2Classes) {
-        final Set<String> keySet = new HashSet<>();
+    private List<DexClassType> getClassTypeList(Set<DexClass> apk1Classes,
+                                                Set<DexClass> apk2Classes) {
+        final Set<DexClassType> keySet = new HashSet<>();
 
         apk1Classes
                 .stream()
@@ -81,8 +81,8 @@ public class DexComparator implements ApkComparator {
                 .map(DexClass::getType)
                 .forEach(keySet::add);
 
-        final List<String> retVal = new ArrayList<>(keySet);
-        Collections.sort(retVal);
+        final List<DexClassType> retVal = new ArrayList<>(keySet);
+        retVal.sort(Comparator.comparing(DexClassType::getType));
 
         return retVal;
     }

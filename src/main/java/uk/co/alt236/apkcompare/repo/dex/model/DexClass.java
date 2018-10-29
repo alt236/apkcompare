@@ -7,23 +7,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DexClass {
-
+    private final DexClassType dexClassType;
     private final boolean innerClass;
     private final boolean lambdaClass;
     private final String simpleName;
-    private final String type;
     private final String superType;
     private final PackageName packageName;
     private final int size;
 
     private DexClass(final DexBackedClassDef classDef) {
-        final DexClassInfo dexClassInfo = new DexClassInfo();
-        this.simpleName = dexClassInfo.getClassSimpleName(classDef);
-        this.type = classDef.getType();
+        this.dexClassType = new DexClassType(classDef);
+        this.simpleName = dexClassType.getClassSimpleName();
         this.superType = classDef.getSuperclass();
-        this.innerClass = dexClassInfo.isInnerClass(classDef);
-        this.lambdaClass = dexClassInfo.isLambda(classDef);
-        this.packageName = new PackageName(dexClassInfo.getPackageName(classDef));
+        this.innerClass = dexClassType.isInnerClass();
+        this.lambdaClass = dexClassType.isLambda();
+        this.packageName = new PackageName(dexClassType.getPackageName());
         this.size = classDef.getSize();
     }
 
@@ -37,8 +35,8 @@ public class DexClass {
         return Collections.unmodifiableSet(retVal);
     }
 
-    public String getType() {
-        return type;
+    public DexClassType getType() {
+        return dexClassType;
     }
 
     public String getSuperType() {

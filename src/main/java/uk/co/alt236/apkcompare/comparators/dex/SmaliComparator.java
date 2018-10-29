@@ -3,6 +3,7 @@ package uk.co.alt236.apkcompare.comparators.dex;
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.results.ResultItem;
 import uk.co.alt236.apkcompare.comparators.results.StringResultItem;
+import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.util.Hasher;
 
 class SmaliComparator {
@@ -21,14 +22,14 @@ class SmaliComparator {
         this.hasher = hasher;
     }
 
-    public ResultItem compareClasses(final String classType) {
+    public ResultItem compareClasses(final DexClassType classType) {
 
         final String apk1ClassContents = apk1.getSmaliForClassType(classType);
         final String apk2ClassContents = apk2.getSmaliForClassType(classType);
 
 
         return new StringResultItem(
-                classType,
+                classType.getType(),
                 "SHA256",
                 apk1ClassContents == null ? null : hasher.sha256Hex(apk1ClassContents.getBytes()),
                 apk2ClassContents == null ? null : hasher.sha256Hex(apk2ClassContents.getBytes()));

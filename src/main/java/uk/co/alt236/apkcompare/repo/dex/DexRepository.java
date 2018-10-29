@@ -3,6 +3,7 @@ package uk.co.alt236.apkcompare.repo.dex;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
+import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.repo.dex.model.DexFile;
 import uk.co.alt236.apkcompare.util.StreamUtils;
 import uk.co.alt236.apkcompare.zip.common.Entry;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class DexRepository {
     private final ZipContents zipContents;
     private final List<DexFile> dexFiles;
-    private final Map<String, DexClass> classMap;
+    private final Map<DexClassType, DexClass> classMap;
     private final Set<DexClass> dexClasses;
 
     public DexRepository(final ZipContents zipContents) {
@@ -84,7 +85,7 @@ public class DexRepository {
     }
 
     @Nullable
-    public DexClass getClassByType(String classType) {
+    public DexClass getClassByType(DexClassType classType) {
         loadDexClasses();
 
         return classMap.get(classType);

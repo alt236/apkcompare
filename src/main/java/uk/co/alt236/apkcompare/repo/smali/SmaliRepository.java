@@ -8,6 +8,7 @@ import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.util.IndentingWriter;
 import uk.co.alt236.apkcompare.repo.dex.DexRepository;
+import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -32,9 +33,9 @@ public class SmaliRepository {
     }
 
     @Nullable
-    public String getSmaliForType(final String classType) {
+    public String getSmaliForType(final DexClassType classType) {
         loadDexFiles();
-        return disassemble(classDefinitions.get(classType));
+        return disassemble(classDefinitions.get(classType.getType()));
     }
 
 

@@ -2,6 +2,7 @@ package uk.co.alt236.apkcompare.apk;
 
 import uk.co.alt236.apkcompare.repo.dex.DexRepository;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
+import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.repo.signature.SignatureRepository;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.repo.smali.SmaliRepository;
@@ -64,11 +65,11 @@ public class Apk {
     }
 
     @Nullable
-    public DexClass getClassByType(String classType) {
+    public DexClass getClassByType(DexClassType classType) {
         return dexRepository.getClassByType(classType);
     }
 
-    public String getSmaliForClassType(final String classType) {
+    public String getSmaliForClassType(final DexClassType classType) {
         return smaliRepository.getSmaliForType(classType);
     }
 }
