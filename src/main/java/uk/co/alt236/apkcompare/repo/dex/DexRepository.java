@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DexRepository {
     private final ZipContents zipContents;
@@ -123,5 +124,9 @@ public class DexRepository {
     private List<Entry> getDexFileEntries() {
         return zipContents
                 .getEntries(entry -> !entry.isDirectory() && entry.getName().toLowerCase(Locale.US).endsWith(".dex"));
+    }
+
+    public List<String> getDexFileNames() {
+        return getDexFiles().stream().map(DexFile::getName).collect(Collectors.toList());
     }
 }

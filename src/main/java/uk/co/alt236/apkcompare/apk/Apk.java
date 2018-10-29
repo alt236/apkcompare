@@ -2,9 +2,9 @@ package uk.co.alt236.apkcompare.apk;
 
 import uk.co.alt236.apkcompare.repo.dex.DexRepository;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
-import uk.co.alt236.apkcompare.repo.dex.model.DexFile;
 import uk.co.alt236.apkcompare.repo.signature.SignatureRepository;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
+import uk.co.alt236.apkcompare.repo.smali.SmaliRepository;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 import uk.co.alt236.apkcompare.zip.common.ZipContents;
 
@@ -14,23 +14,24 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Apk {
     private final ZipContents zipContents;
     private final File file;
     private final SignatureRepository signatureRepository;
     private final DexRepository dexRepository;
+    private final SmaliRepository smaliRepository;
 
     Apk(File file,
         ZipContents zipContents,
         SignatureRepository signatureRepository,
-        DexRepository dexRepository) {
+        DexRepository dexRepository, SmaliRepository smaliRepository) {
 
         this.file = file;
         this.zipContents = zipContents;
         this.signatureRepository = signatureRepository;
         this.dexRepository = dexRepository;
+        this.smaliRepository = smaliRepository;
     }
 
     public File getFile() {
@@ -67,7 +68,7 @@ public class Apk {
         return dexRepository.getClassByType(classType);
     }
 
-    public List<String> getDexFileNames() {
-        return dexRepository.getDexFiles().stream().map(DexFile::getName).collect(Collectors.toList());
+    public String getSmaliForClassType(final String classType) {
+        return smaliRepository.getSmaliForType(classType);
     }
 }
