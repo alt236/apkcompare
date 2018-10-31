@@ -3,8 +3,9 @@ package uk.co.alt236.apkcompare.apk;
 import uk.co.alt236.apkcompare.repo.dex.DexRepository;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
-import uk.co.alt236.apkcompare.repo.signature.SignatureRepository;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
+import uk.co.alt236.apkcompare.repo.signature.v1.SignatureV1Repository;
+import uk.co.alt236.apkcompare.repo.signature.v2.SignatureV2Repository;
 import uk.co.alt236.apkcompare.repo.smali.SmaliRepository;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 import uk.co.alt236.apkcompare.zip.common.ZipContents;
@@ -19,18 +20,22 @@ import java.util.Set;
 public class Apk {
     private final ZipContents zipContents;
     private final File file;
-    private final SignatureRepository signatureRepository;
+    private final SignatureV1Repository signatureV1Repository;
+    private final SignatureV2Repository signatureV2Repository;
     private final DexRepository dexRepository;
     private final SmaliRepository smaliRepository;
 
     Apk(File file,
         ZipContents zipContents,
-        SignatureRepository signatureRepository,
-        DexRepository dexRepository, SmaliRepository smaliRepository) {
+        SignatureV1Repository signatureV1Repository,
+        SignatureV2Repository signatureV2Repository,
+        DexRepository dexRepository,
+        SmaliRepository smaliRepository) {
 
         this.file = file;
         this.zipContents = zipContents;
-        this.signatureRepository = signatureRepository;
+        this.signatureV1Repository = signatureV1Repository;
+        this.signatureV2Repository = signatureV2Repository;
         this.dexRepository = dexRepository;
         this.smaliRepository = smaliRepository;
     }
@@ -43,12 +48,33 @@ public class Apk {
         return zipContents.getEntries();
     }
 
-    public List<SigningCertificate> getCertificates() {
-        return signatureRepository.getCertificates();
+    public List<SigningCertificate> getV1Certificates() {
+        return signatureV1Repository.getCertificates();
+    }
+
+    public boolean isV1Signed() {
+        return signatureV1Repository.isSigned();
+    }
+
+    public boolean isV1SignatureValid() {
+        return signatureV1Repository.isSignatureValid();
+    }
+
+    public List<SigningCertificate> getV2Certificates() {
+        return signatureV2Repository.getCertificates();
+    }
+
+    public boolean isV2Signed() {
+        return signatureV2Repository.isSigned();
+    }
+
+    public boolean isV2SignatureValid() {
+        return signatureV2Repository.isSignatureValid();
     }
 
     public void close() {
         zipContents.close();
+        signatureV2Repository.close();
     }
 
     @Nullable

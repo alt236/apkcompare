@@ -1,6 +1,8 @@
-package uk.co.alt236.apkcompare.repo.signature;
+package uk.co.alt236.apkcompare.repo.signature.v1;
 
 
+import uk.co.alt236.apkcompare.repo.signature.SignatureStatus;
+import uk.co.alt236.apkcompare.repo.signature.ValidationResult;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 
 import java.io.File;

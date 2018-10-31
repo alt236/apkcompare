@@ -12,7 +12,7 @@ public class SigningCertificate {
     private final X509Certificate cert;
     private final Hasher hasher;
 
-    SigningCertificate(X509Certificate cert) {
+    public SigningCertificate(X509Certificate cert) {
         this.cert = cert;
         this.hasher = new Hasher();
     }

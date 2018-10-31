@@ -1,4 +1,8 @@
-package uk.co.alt236.apkcompare.repo.signature;
+package uk.co.alt236.apkcompare.repo.signature.v1;
+
+import uk.co.alt236.apkcompare.repo.signature.SignatureStatus;
+import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
+import uk.co.alt236.apkcompare.repo.signature.ValidationResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +15,12 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class SignatureRepository {
+public class SignatureV1Repository {
     private final File file;
     private final List<SigningCertificate> certList;
+    private ValidationResult validationResult;
 
-    public SignatureRepository(File file) {
+    public SignatureV1Repository(File file) {
         this.file = file;
         this.certList = new ArrayList<>();
     }
@@ -23,6 +28,18 @@ public class SignatureRepository {
     public List<SigningCertificate> getCertificates() {
         loadCertificates();
         return Collections.unmodifiableList(certList);
+    }
+
+    public boolean isSigned() {
+        validateSignature();
+        return validationResult.getSignatureStatus() != SignatureStatus.ABSENT
+                && validationResult.getSignatureStatus() != SignatureStatus.ERROR;
+
+    }
+
+    public boolean isSignatureValid() {
+        validateSignature();
+        return validationResult.getSignatureStatus() == SignatureStatus.VALID;
     }
 
     private void loadCertificates() {
@@ -61,7 +78,12 @@ public class SignatureRepository {
     }
 
 
-    public ValidationResult validateSignature() {
-        return new SignatureValidator().validateSignature(file);
+    private synchronized void validateSignature() {
+        if (validationResult != null) {
+            return;
+        }
+
+        validationResult = new SignatureValidator().validateSignature(file);
     }
+
 }

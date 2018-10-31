@@ -11,13 +11,13 @@ public class ValidationResult {
     private final List<Entry> failedEntries;
 
 
-    ValidationResult(final SignatureStatus signatureStatusStatus,
-                     final List<Entry> result) {
+    public ValidationResult(final SignatureStatus signatureStatusStatus,
+                            final List<Entry> result) {
         this.signatureStatusStatus = signatureStatusStatus;
         this.failedEntries = result;
     }
 
-    ValidationResult(final SignatureStatus signatureStatusStatus) {
+    public ValidationResult(final SignatureStatus signatureStatusStatus) {
         this(signatureStatusStatus, Collections.emptyList());
     }
 

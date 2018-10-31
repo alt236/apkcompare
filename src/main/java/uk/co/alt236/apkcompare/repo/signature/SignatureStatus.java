@@ -1,6 +1,6 @@
 package uk.co.alt236.apkcompare.repo.signature;
 
-enum SignatureStatus {
+public enum SignatureStatus {
     ERROR,
     ABSENT,
     VALID,
