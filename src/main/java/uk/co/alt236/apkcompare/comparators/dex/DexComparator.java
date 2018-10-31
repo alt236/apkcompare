@@ -1,11 +1,13 @@
 package uk.co.alt236.apkcompare.comparators.dex;
 
+import com.android.dx.rop.code.AccessFlags;
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.TypedComparison;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.util.Hasher;
@@ -48,17 +50,51 @@ public class DexComparator implements ApkComparator {
         final DexClass class1 = apk1.getClassByType(classType);
         final DexClass class2 = apk2.getClassByType(classType);
 
-        final long fileSize1 = class1 == null ? -1 : class1.getSize();
-        final long fileSize2 = class2 == null ? -1 : class2.getSize();
-
         final CompositeResult.Builder builder = new CompositeResult.Builder();
 
         builder.withTitle(classType.getType());
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Sourcefile",
+                class1 == null ? null : class1.getSourceFile(),
+                class2 == null ? null : class2.getSourceFile()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Superclass",
+                class1 == null ? null : class1.getSuperType(),
+                class2 == null ? null : class2.getSuperType()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Access Flags",
+                class1 == null ? null : AccessFlags.classString(class1.getAccessFlags()),
+                class2 == null ? null : AccessFlags.classString(class2.getAccessFlags())));
+
         builder.withComparison(new ByteCountComparison(
                 classType.getType(),
                 "Class size",
-                class1 == null ? null : fileSize1,
-                class2 == null ? null : fileSize2));
+                class1 == null ? null : class1.getSize(),
+                class2 == null ? null : class2.getSize()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Number of Methods",
+                class1 == null ? null : class1.getNumberOfMethods(),
+                class2 == null ? null : class2.getNumberOfMethods()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Number of Fields",
+                class1 == null ? null : class1.getNumberOfFields(),
+                class2 == null ? null : class2.getNumberOfFields()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Number of Annotations",
+                class1 == null ? null : class1.getNumberOfAnnontations(),
+                class2 == null ? null : class2.getNumberOfAnnontations()));
 
         builder.withComparison(smaliComparator.compareClasses(classType));
 

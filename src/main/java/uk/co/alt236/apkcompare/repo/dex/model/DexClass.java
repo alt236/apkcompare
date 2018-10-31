@@ -5,6 +5,7 @@ import org.jf.dexlib2.dexbacked.DexBackedClassDef;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 public class DexClass {
     private final DexClassType dexClassType;
@@ -12,17 +13,27 @@ public class DexClass {
     private final boolean lambdaClass;
     private final String simpleName;
     private final String superType;
+    private final String sourceFile;
     private final PackageName packageName;
     private final int size;
+    private final long numberOfMethods;
+    private final long numberOfFields;
+    private final long numberOfAnnotations;
+    private final int accessFlags;
 
     private DexClass(final DexBackedClassDef classDef) {
         this.dexClassType = new DexClassType(classDef);
         this.simpleName = dexClassType.getClassSimpleName();
         this.superType = classDef.getSuperclass();
+        this.sourceFile = classDef.getSourceFile();
         this.innerClass = dexClassType.isInnerClass();
         this.lambdaClass = dexClassType.isLambda();
         this.packageName = new PackageName(dexClassType.getPackageName());
         this.size = classDef.getSize();
+        this.accessFlags = classDef.getAccessFlags();
+        this.numberOfMethods = count(classDef.getMethods());
+        this.numberOfFields = count(classDef.getFields());
+        this.numberOfAnnotations = count(classDef.getAnnotations());
     }
 
     static Set<DexClass> getClasses(final Set<? extends DexBackedClassDef> classes) {
@@ -61,5 +72,29 @@ public class DexClass {
 
     public long getSize() {
         return size;
+    }
+
+    private static long count(final Iterable<?> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false).count();
+    }
+
+    public long getNumberOfMethods() {
+        return numberOfMethods;
+    }
+
+    public long getNumberOfFields() {
+        return numberOfFields;
+    }
+
+    public long getNumberOfAnnontations() {
+        return numberOfAnnotations;
+    }
+
+    public String getSourceFile() {
+        return sourceFile;
+    }
+
+    public int getAccessFlags() {
+        return accessFlags;
     }
 }
