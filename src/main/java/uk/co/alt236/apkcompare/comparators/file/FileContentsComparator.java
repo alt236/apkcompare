@@ -2,7 +2,11 @@ package uk.co.alt236.apkcompare.comparators.file;
 
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
-import uk.co.alt236.apkcompare.comparators.results.*;
+import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
+import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.TypedComparison;
 import uk.co.alt236.apkcompare.util.Hasher;
 import uk.co.alt236.apkcompare.zip.common.Entry;
 
@@ -18,33 +22,31 @@ public class FileContentsComparator implements ApkComparator {
     }
 
     @Override
-    public List<ResultSection> compare(Apk file1, Apk file2) {
-        final List<ResultSection> retVal = new ArrayList<>();
+    public List<ComparisonResult> compare(Apk file1, Apk file2) {
+        final List<ComparisonResult> retVal = new ArrayList<>();
 
-        final List<ResultBlock> signatureComparison = compareEntryLists(file1, file2);
-        retVal.add(new ResultSection("Contents Comparison", signatureComparison));
+        final List<ComparisonResult> signatureComparison = compareEntryLists(file1, file2);
+        retVal.add(new ResultBlock("Contents Comparison", signatureComparison));
 
         return retVal;
     }
 
-    private List<ResultBlock> compareEntryLists(Apk file1, Apk file2) {
-        final List<ResultBlock> retVal = new ArrayList<>();
-        final List<ResultItem> resultItems = new ArrayList<>();
+    private List<ComparisonResult> compareEntryLists(Apk file1, Apk file2) {
+        final List<ComparisonResult> retVal = new ArrayList<>();
+        final List<Comparison> comparisons = new ArrayList<>();
 
         final List<String> nameList = getKeyList(file1.getContents(), file2.getContents());
 
         for (final String name : nameList) {
-
-
-            final ResultItem resultItem = compare(name, file1, file2);
-            resultItems.add(resultItem);
+            final Comparison comparison = compare(name, file1, file2);
+            comparisons.add(comparison);
         }
 
-        retVal.add(new ResultBlock("File Contents", resultItems));
+        retVal.add(new ResultBlock("File Contents", comparisons));
         return retVal;
     }
 
-    private ResultItem compare(@Nonnull String name,
+    private Comparison compare(@Nonnull String name,
                                @Nonnull Apk apk1,
                                @Nonnull Apk apk2) {
 
@@ -54,9 +56,9 @@ public class FileContentsComparator implements ApkComparator {
         final long fileSize1 = entry1 == null ? -1 : entry1.getFileSize();
         final long fileSize2 = entry2 == null ? -1 : entry2.getFileSize();
 
-        final ResultItem resultItem;
+        final Comparison comparison;
         if (fileSize1 != fileSize2) {
-            resultItem = new ByteCountResultItem(
+            comparison = new ByteCountComparison(
                     name,
                     "File size",
                     entry1 == null ? null : fileSize1,
@@ -65,11 +67,11 @@ public class FileContentsComparator implements ApkComparator {
             final String hash1 = entry1 == null ? null : hasher.sha256Hex(apk1.getEntryStream(entry1));
             final String hash2 = entry2 == null ? null : hasher.sha256Hex(apk2.getEntryStream(entry2));
 
-            resultItem = new StringResultItem(name, "SHA256", hash1, hash2);
+            comparison = new TypedComparison<>(name, "SHA256", hash1, hash2);
         }
 
 
-        return resultItem;
+        return comparison;
     }
 
 

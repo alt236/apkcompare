@@ -4,17 +4,17 @@ import java.util.List;
 
 public class ResultBlock implements ComparisonResult {
 
-    private final List<ResultItem> resultItems;
+    private final List<? extends ComparisonResult> comparisons;
     private final String title;
 
     public ResultBlock(String title,
-                       List<ResultItem> resultItems) {
+                       List<? extends ComparisonResult> comparisons) {
         this.title = title;
-        this.resultItems = resultItems;
+        this.comparisons = comparisons;
     }
 
-    public List<ResultItem> getResultItems() {
-        return resultItems;
+    public List<? extends ComparisonResult> getComparisonResults() {
+        return comparisons;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ResultBlock implements ComparisonResult {
 
     @Override
     public Similarity getSimilarity() {
-        return CollectionSimilarityEvaluator.evaluate(resultItems);
+        return CollectionSimilarityEvaluator.evaluate(comparisons);
     }
 
 }

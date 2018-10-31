@@ -1,7 +1,8 @@
 package uk.co.alt236.apkcompare.comparators.signature;
 
 import uk.co.alt236.apkcompare.apk.Apk;
-import uk.co.alt236.apkcompare.comparators.results.ResultSection;
+import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
+import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 
 import java.util.ArrayList;
@@ -14,15 +15,15 @@ class V1SignatureComparator {
         signatureBlockFactory = new SignatureBlockFactory();
     }
 
-    public List<ResultSection> compare(Apk apk1, Apk apk2) {
-        final List<ResultSection> retVal = new ArrayList<>();
+    public List<ComparisonResult> compare(Apk apk1, Apk apk2) {
+        final List<ComparisonResult> retVal = new ArrayList<>();
 
         final SignatureBlockFactory.SignatureInfoProvider provider1 = createProvider(apk1);
         final SignatureBlockFactory.SignatureInfoProvider provider2 = createProvider(apk2);
 
-        retVal.add(new ResultSection("V1 Signing Info",
+        retVal.add(new ResultBlock("V1 Signing Info",
                 signatureBlockFactory.createSignatureInfoBlock(provider1, provider2)));
-        retVal.add(new ResultSection("V1 Signature Comparison",
+        retVal.add(new ResultBlock("V1 Signature Comparison",
                 signatureBlockFactory.createSignatureComparisonBlock(provider1, provider2)));
         return retVal;
     }

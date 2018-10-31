@@ -6,7 +6,7 @@ import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.dex.DexComparator;
 import uk.co.alt236.apkcompare.comparators.file.FileComparator;
 import uk.co.alt236.apkcompare.comparators.file.FileContentsComparator;
-import uk.co.alt236.apkcompare.comparators.results.ResultSection;
+import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.signature.SignatureComparator;
 import uk.co.alt236.apkcompare.output.ResultsPrinter;
 import uk.co.alt236.apkcompare.output.logging.Logger;
@@ -42,7 +42,7 @@ class ApkCompare {
         Logger.get().out("APK 1: " + apk1.getFile());
         Logger.get().out("APK 2: " + apk2.getFile());
 
-        final List<ResultSection> results = new ArrayList<>();
+        final List<ComparisonResult> results = new ArrayList<>();
 
         for (final ApkComparator comparator : comparatorList) {
             results.addAll(comparator.compare(apk1, apk2));

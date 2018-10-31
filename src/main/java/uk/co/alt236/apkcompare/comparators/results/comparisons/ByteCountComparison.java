@@ -1,16 +1,18 @@
-package uk.co.alt236.apkcompare.comparators.results;
+package uk.co.alt236.apkcompare.comparators.results.comparisons;
+
+import uk.co.alt236.apkcompare.comparators.results.Similarity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ByteCountResultItem implements ResultItem {
+public class ByteCountComparison implements Comparison {
 
     private final String title;
     private final Long value1;
     private final Long value2;
     private final String comparedAttribute;
 
-    public ByteCountResultItem(@Nonnull String title,
+    public ByteCountComparison(@Nonnull String title,
                                @Nullable String comparedAttribute,
                                @Nullable Long value1,
                                @Nullable Long value2) {

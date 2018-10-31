@@ -2,7 +2,7 @@ package uk.co.alt236.apkcompare.comparators.signature;
 
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
-import uk.co.alt236.apkcompare.comparators.results.ResultSection;
+import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,8 @@ public class SignatureComparator implements ApkComparator {
     }
 
     @Override
-    public List<ResultSection> compare(Apk apk1, Apk apk2) {
-        final List<ResultSection> retVal = new ArrayList<>();
+    public List<ComparisonResult> compare(Apk apk1, Apk apk2) {
+        final List<ComparisonResult> retVal = new ArrayList<>();
 
         retVal.addAll(v1SignatureComparator.compare(apk1, apk2));
         retVal.addAll(v2SignatureComparator.compare(apk1, apk2));

@@ -1,19 +1,20 @@
-package uk.co.alt236.apkcompare.comparators.results;
+package uk.co.alt236.apkcompare.comparators.results.comparisons;
 
 import org.apache.commons.codec.binary.StringUtils;
+import uk.co.alt236.apkcompare.comparators.results.Similarity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class TypedResultItem<T> implements ResultItem {
+public class TypedComparison<T> implements Comparison {
 
     private final String title;
     private final T value1;
     private final T value2;
     private final String comparedAttribute;
 
-    public TypedResultItem(@Nonnull String title,
+    public TypedComparison(@Nonnull String title,
                            @Nullable String comparedAttribute,
                            @Nullable T value1,
                            @Nullable T value2) {
@@ -22,7 +23,6 @@ public class TypedResultItem<T> implements ResultItem {
         this.value1 = value1;
         this.value2 = value2;
     }
-
 
     @Override
     public String getTitle() {
