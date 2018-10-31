@@ -30,7 +30,7 @@ class SmaliComparator {
 
         return new TypedComparison<>(
                 classType.getType(),
-                "SHA256",
+                "Smali SHA256",
                 apk1ClassContents == null ? null : hasher.sha256Hex(apk1ClassContents.getBytes()),
                 apk2ClassContents == null ? null : hasher.sha256Hex(apk2ClassContents.getBytes()));
     }

@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.stream.Collectors;
 
-class CollectionSimilarityEvaluator {
+public class CollectionSimilarityEvaluator {
 
-    static Similarity evaluate(final Collection<? extends ComparisonResult> items) {
+    public static Similarity evaluate(final Collection<? extends ComparisonResult> items) {
         EnumSet<Similarity> enumSet =
                 items
                         .stream()

@@ -3,8 +3,8 @@ package uk.co.alt236.apkcompare.output;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.Similarity;
-import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.output.logging.Logger;
 import uk.co.alt236.apkcompare.util.Colorizer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
@@ -12,23 +12,20 @@ import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 import java.util.List;
 
 public class ResultsPrinter {
-    private static final String MISSING_VALUE = "*** MISSING ***";
 
-    private final FileSizeFormatter fileSizeFormatter;
     private final Colorizer colorizer;
     private final boolean verbose;
-    private final String colouredMissingValue;
     private final IndentGiver indentGiver;
+    private final ItemValuePrinter itemValuePrinter;
 
     public ResultsPrinter(FileSizeFormatter fileSizeFormatter,
                           Colorizer colorizer,
                           boolean verbose) {
 
         this.indentGiver = new IndentGiver();
-        this.fileSizeFormatter = fileSizeFormatter;
         this.colorizer = colorizer;
         this.verbose = verbose;
-        this.colouredMissingValue = colorizer.important(MISSING_VALUE);
+        this.itemValuePrinter = new ItemValuePrinter(fileSizeFormatter, colorizer, indentGiver);
     }
 
     public void print(List<ComparisonResult> results) {
@@ -42,12 +39,26 @@ public class ResultsPrinter {
         if (item instanceof Comparison) {
             print((Comparison) item, indentLevel);
         } else if (item instanceof ResultBlock) {
-            printTitle(item, indentGiver.getIndentation(indentLevel));
+            printTitle(item, indentLevel);
             for (final ComparisonResult child : ((ResultBlock) item).getComparisonResults()) {
                 print(child, indentLevel + 1);
             }
+        } else if (item instanceof CompositeResult) {
+            print((CompositeResult) item, indentLevel);
         } else {
             throw new IllegalStateException("Don't know how to handle: " + item);
+        }
+    }
+
+    private void print(final CompositeResult item,
+                       final int indentLevel) {
+        if (!isPrintable(item)) {
+            return;
+        }
+
+        printTitle(item, indentLevel);
+        for (final Comparison comparison : item.getComparisons()) {
+            printItemValues(comparison, indentLevel + 1, true);
         }
     }
 
@@ -57,18 +68,19 @@ public class ResultsPrinter {
             return;
         }
 
-        printTitle(item, indentGiver.getIndentation(indentLevel));
-        printItemValues(item, indentGiver.getIndentation(indentLevel + 1));
+        printTitle(item, indentLevel);
+        printItemValues(item, indentLevel + 1, false);
     }
 
 
     private void printTitle(final ComparisonResult item,
-                            final String indent) {
+                            final int indentLevel) {
         if (!isPrintable(item)) {
             return;
         }
 
         final String finalText;
+        final String indent = indentGiver.getIndentation(indentLevel);
 
         if (item.getSimilarity() == Similarity.IDENTICAL) {
             finalText = indent + item.getTitle();
@@ -81,27 +93,13 @@ public class ResultsPrinter {
     }
 
     private void printItemValues(final Comparison item,
-                                 final String indent) {
+                                 final int indentLevel,
+                                 final boolean colourDifferences) {
         if (!isPrintable(item)) {
             return;
         }
 
-        final String value1;
-        final String value2;
-
-        if (item instanceof ByteCountComparison) {
-            final ByteCountComparison byteRsult = (ByteCountComparison) item;
-            final String comparedAttribute = byteRsult.getComparedAttribute() == null ? "" : byteRsult.getComparedAttribute() + ": ";
-
-            value1 = (byteRsult.getValue1() == null ? colouredMissingValue : comparedAttribute + fileSizeFormatter.format(byteRsult.getValue1()));
-            value2 = (byteRsult.getValue2() == null ? colouredMissingValue : comparedAttribute + fileSizeFormatter.format(byteRsult.getValue2()));
-        } else {
-            value1 = (item.getValue1AsString() == null ? colouredMissingValue : item.getValue1AsString());
-            value2 = (item.getValue2AsString() == null ? colouredMissingValue : item.getValue2AsString());
-        }
-
-        Logger.get().out(indent + "APK 1: " + value1);
-        Logger.get().out(indent + "APK 2: " + value2);
+        itemValuePrinter.printItemValues(item, indentLevel, colourDifferences);
     }
 
     private boolean isPrintable(final ComparisonResult item) {

@@ -5,7 +5,7 @@ import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
-import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.util.Hasher;
@@ -27,23 +27,23 @@ public class DexComparator implements ApkComparator {
     private List<ResultBlock> compareClasses(Apk apk1, Apk apk2) {
         final SmaliComparator smaliComparator = new SmaliComparator(new Hasher(), apk1, apk2);
         final List<ResultBlock> retVal = new ArrayList<>();
-        final List<Comparison> comparisons = new ArrayList<>();
+        final List<ComparisonResult> comparisons = new ArrayList<>();
         final List<DexClassType> classTypeList = getClassTypeList(apk1.getClasses(), apk2.getClasses());
 
         for (final DexClassType classType : classTypeList) {
 
-            final Comparison comparison = compare(classType, apk1, apk2, smaliComparator);
-            comparisons.add(comparison);
+            final CompositeResult result = compare(classType, apk1, apk2, smaliComparator);
+            comparisons.add(result);
         }
 
         retVal.add(new ResultBlock("Class Comparison", comparisons));
         return retVal;
     }
 
-    private Comparison compare(DexClassType classType,
-                               Apk apk1,
-                               Apk apk2,
-                               SmaliComparator smaliComparator) {
+    private CompositeResult compare(DexClassType classType,
+                                    Apk apk1,
+                                    Apk apk2,
+                                    SmaliComparator smaliComparator) {
 
         final DexClass class1 = apk1.getClassByType(classType);
         final DexClass class2 = apk2.getClassByType(classType);
@@ -51,19 +51,18 @@ public class DexComparator implements ApkComparator {
         final long fileSize1 = class1 == null ? -1 : class1.getSize();
         final long fileSize2 = class2 == null ? -1 : class2.getSize();
 
-        final Comparison comparison;
-        if (fileSize1 != fileSize2) {
-            comparison = new ByteCountComparison(
-                    classType.getType(),
-                    "Class size",
-                    class1 == null ? null : fileSize1,
-                    class2 == null ? null : fileSize2);
-        } else {
-            return smaliComparator.compareClasses(classType);
-        }
+        final CompositeResult.Builder builder = new CompositeResult.Builder();
 
+        builder.withTitle(classType.getType());
+        builder.withComparison(new ByteCountComparison(
+                classType.getType(),
+                "Class size",
+                class1 == null ? null : fileSize1,
+                class2 == null ? null : fileSize2));
 
-        return comparison;
+        builder.withComparison(smaliComparator.compareClasses(classType));
+
+        return builder.build();
     }
 
 
