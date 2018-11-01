@@ -12,6 +12,7 @@ import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
 import uk.co.alt236.apkcompare.util.Hasher;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class DexComparator implements ApkComparator {
@@ -69,14 +70,26 @@ public class DexComparator implements ApkComparator {
         builder.withComparison(new TypedComparison<>(
                 classType.getType(),
                 "Access Flags",
-                class1 == null ? null : AccessFlags.classString(class1.getAccessFlags()),
-                class2 == null ? null : AccessFlags.classString(class2.getAccessFlags())));
+                class1 == null ? null : getAccessFlags(class1),
+                class2 == null ? null : getAccessFlags(class2)));
 
         builder.withComparison(new ByteCountComparison(
                 classType.getType(),
                 "Class size",
                 class1 == null ? null : class1.getSize(),
                 class2 == null ? null : class2.getSize()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Number of Annotations",
+                class1 == null ? null : class1.getNumberOfAnnotations(),
+                class2 == null ? null : class2.getNumberOfAnnotations()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Number of Interfaces",
+                class1 == null ? null : class1.getNumberOfInterfaces(),
+                class2 == null ? null : class2.getNumberOfInterfaces()));
 
         builder.withComparison(new TypedComparison<>(
                 classType.getType(),
@@ -90,11 +103,6 @@ public class DexComparator implements ApkComparator {
                 class1 == null ? null : class1.getNumberOfFields(),
                 class2 == null ? null : class2.getNumberOfFields()));
 
-        builder.withComparison(new TypedComparison<>(
-                classType.getType(),
-                "Number of Annotations",
-                class1 == null ? null : class1.getNumberOfAnnontations(),
-                class2 == null ? null : class2.getNumberOfAnnontations()));
 
         builder.withComparison(smaliComparator.compareClasses(classType));
 
@@ -120,5 +128,20 @@ public class DexComparator implements ApkComparator {
         retVal.sort(Comparator.comparing(DexClassType::getType));
 
         return retVal;
+    }
+
+    private String getAccessFlags(@Nonnull DexClass dexClass) {
+        final String result;
+        if (dexClass.isInnerClass()) {
+            result = AccessFlags.innerClassString(dexClass.getAccessFlags());
+        } else {
+            result = AccessFlags.classString(dexClass.getAccessFlags());
+        }
+
+        if ("0000".equals(result)) {
+            return "none";
+        } else {
+            return result;
+        }
     }
 }

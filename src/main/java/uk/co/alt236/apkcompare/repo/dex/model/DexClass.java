@@ -19,6 +19,7 @@ public class DexClass {
     private final long numberOfMethods;
     private final long numberOfFields;
     private final long numberOfAnnotations;
+    private final long numberOfInterfaces;
     private final int accessFlags;
 
     private DexClass(final DexBackedClassDef classDef) {
@@ -33,6 +34,7 @@ public class DexClass {
         this.accessFlags = classDef.getAccessFlags();
         this.numberOfMethods = count(classDef.getMethods());
         this.numberOfFields = count(classDef.getFields());
+        this.numberOfInterfaces = count(classDef.getInterfaces());
         this.numberOfAnnotations = count(classDef.getAnnotations());
     }
 
@@ -74,10 +76,6 @@ public class DexClass {
         return size;
     }
 
-    private static long count(final Iterable<?> iterable) {
-        return StreamSupport.stream(iterable.spliterator(), false).count();
-    }
-
     public long getNumberOfMethods() {
         return numberOfMethods;
     }
@@ -86,7 +84,11 @@ public class DexClass {
         return numberOfFields;
     }
 
-    public long getNumberOfAnnontations() {
+    private static long count(final Iterable<?> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false).count();
+    }
+
+    public long getNumberOfAnnotations() {
         return numberOfAnnotations;
     }
 
@@ -96,5 +98,9 @@ public class DexClass {
 
     public int getAccessFlags() {
         return accessFlags;
+    }
+
+    public long getNumberOfInterfaces() {
+        return numberOfInterfaces;
     }
 }
