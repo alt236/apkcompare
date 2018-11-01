@@ -1,30 +1,33 @@
-package uk.co.alt236.apkcompare.output;
+package uk.co.alt236.apkcompare.output.console;
 
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
+import uk.co.alt236.apkcompare.output.PrintabilityEvaluator;
 import uk.co.alt236.apkcompare.output.logging.Logger;
 import uk.co.alt236.apkcompare.util.Colorizer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 
 import java.util.List;
 
-public class ResultsPrinter {
+public class ConsoleResultsPrinter {
 
     private final Colorizer colorizer;
     private final boolean verbose;
     private final IndentGiver indentGiver;
     private final ItemValuePrinter itemValuePrinter;
+    private final PrintabilityEvaluator printabilityEvaluator;
 
-    public ResultsPrinter(FileSizeFormatter fileSizeFormatter,
-                          Colorizer colorizer,
-                          boolean verbose) {
+    public ConsoleResultsPrinter(FileSizeFormatter fileSizeFormatter,
+                                 Colorizer colorizer,
+                                 boolean verbose) {
 
         this.indentGiver = new IndentGiver();
         this.colorizer = colorizer;
         this.verbose = verbose;
+        this.printabilityEvaluator = new PrintabilityEvaluator();
         this.itemValuePrinter = new ItemValuePrinter(fileSizeFormatter, colorizer, indentGiver);
     }
 
@@ -52,7 +55,7 @@ public class ResultsPrinter {
 
     private void print(final CompositeResult item,
                        final int indentLevel) {
-        if (!isPrintable(item)) {
+        if (!printabilityEvaluator.isPrintable(item, verbose)) {
             return;
         }
 
@@ -64,7 +67,7 @@ public class ResultsPrinter {
 
     private void print(final Comparison item,
                        final int indentLevel) {
-        if (!isPrintable(item)) {
+        if (!printabilityEvaluator.isPrintable(item, verbose)) {
             return;
         }
 
@@ -75,7 +78,7 @@ public class ResultsPrinter {
 
     private void printTitle(final ComparisonResult item,
                             final int indentLevel) {
-        if (!isPrintable(item)) {
+        if (!printabilityEvaluator.isPrintable(item, verbose)) {
             return;
         }
 
@@ -95,15 +98,10 @@ public class ResultsPrinter {
     private void printItemValues(final Comparison item,
                                  final int indentLevel,
                                  final boolean colourDifferences) {
-        if (!isPrintable(item)) {
+        if (!printabilityEvaluator.isPrintable(item, verbose)) {
             return;
         }
 
         itemValuePrinter.printItemValues(item, indentLevel, colourDifferences);
-    }
-
-    private boolean isPrintable(final ComparisonResult item) {
-        final boolean isDifferent = item.getSimilarity() != Similarity.IDENTICAL;
-        return isDifferent || verbose;
     }
 }

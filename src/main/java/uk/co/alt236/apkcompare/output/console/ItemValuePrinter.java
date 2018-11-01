@@ -1,4 +1,4 @@
-package uk.co.alt236.apkcompare.output;
+package uk.co.alt236.apkcompare.output.console;
 
 import uk.co.alt236.apkcompare.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;

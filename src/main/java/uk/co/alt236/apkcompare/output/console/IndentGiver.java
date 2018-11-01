@@ -1,4 +1,4 @@
-package uk.co.alt236.apkcompare.output;
+package uk.co.alt236.apkcompare.output.console;
 
 class IndentGiver {
     private static final String LEVEL_0_INDENT = "";
