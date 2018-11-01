@@ -45,6 +45,7 @@ public class HtmlResultsPrinter {
 
         final Writer writer = new FileWriter("html.html");
         writer.outln(builder.toString());
+        writer.close();
     }
 
     private void print(final HtmlBuilder builder, final ComparisonResult item, final int indentLevel) {
