@@ -11,6 +11,7 @@ import uk.co.alt236.apkcompare.output.writer.FileWriter;
 import uk.co.alt236.apkcompare.output.writer.Writer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class HtmlResultsPrinter {
         this.printabilityEvaluator = new PrintabilityEvaluator();
     }
 
-    public void print(List<ComparisonResult> results) {
+    public void print(final List<ComparisonResult> results,
+                      final File file) {
         final HtmlBuilder builder = new HtmlBuilder();
 
         builder.startDocument();
@@ -41,9 +43,8 @@ public class HtmlResultsPrinter {
         }
 
         builder.endDocument();
-        System.out.println(builder);
 
-        final Writer writer = new FileWriter("html.html");
+        final Writer writer = new FileWriter(file);
         writer.outln(builder.toString());
         writer.close();
     }
