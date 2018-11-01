@@ -4,7 +4,7 @@ import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
-import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
+import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.TypedComparison;
 import uk.co.alt236.apkcompare.util.Hasher;
 
@@ -31,14 +31,16 @@ public class FileComparator implements ApkComparator {
 
     private List<ComparisonResult> compareFiles(Apk apk1, Apk apk2) {
         final List<ComparisonResult> retVal = new ArrayList<>();
-        final List<Comparison> comparisons = new ArrayList<>();
 
-        comparisons.add(new TypedComparison<>("MD5", null, hasher.md5Hex(apk1.getFile()), hasher.md5Hex(apk2.getFile())));
-        comparisons.add(new TypedComparison<>("SHA1", null, hasher.sha1Hex(apk1.getFile()), hasher.sha1Hex(apk2.getFile())));
-        comparisons.add(new TypedComparison<>("SHA256", null, hasher.sha256Hex(apk1.getFile()), hasher.sha256Hex(apk2.getFile())));
+        final CompositeResult compositeResult = new CompositeResult
+                .Builder()
+                .withTitle("File Hashes")
+                .withComparison(new TypedComparison<>("File Hashes", "MD5", hasher.md5Hex(apk1.getFile()), hasher.md5Hex(apk2.getFile())))
+                .withComparison(new TypedComparison<>("File Hashes", "SHA1", hasher.sha1Hex(apk1.getFile()), hasher.sha1Hex(apk2.getFile())))
+                .withComparison(new TypedComparison<>("File Hashes", "SHA256", hasher.sha256Hex(apk1.getFile()), hasher.sha256Hex(apk2.getFile())))
+                .build();
 
-
-        retVal.add(new ResultBlock("File Hashes", comparisons));
+        retVal.add(compositeResult);
         return retVal;
     }
 
