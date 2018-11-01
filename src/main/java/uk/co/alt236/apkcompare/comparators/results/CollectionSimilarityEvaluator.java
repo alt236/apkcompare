@@ -1,22 +1,17 @@
 package uk.co.alt236.apkcompare.comparators.results;
 
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.stream.Collectors;
 
 public class CollectionSimilarityEvaluator {
 
     public static Similarity evaluate(final Collection<? extends ComparisonResult> items) {
-        EnumSet<Similarity> enumSet =
-                items
-                        .stream()
-                        .map(ComparisonResult::getSimilarity)
-                        .collect(Collectors.toCollection(() -> EnumSet.noneOf(Similarity.class)));
 
-        if (enumSet.contains(Similarity.DIFFERENT)) {
-            return Similarity.DIFFERENT;
-        } else {
-            return Similarity.IDENTICAL;
+        for (final ComparisonResult result : items) {
+            if (result.getSimilarity() != Similarity.IDENTICAL) {
+                return result.getSimilarity();
+            }
         }
+
+        return Similarity.IDENTICAL;
     }
 }
