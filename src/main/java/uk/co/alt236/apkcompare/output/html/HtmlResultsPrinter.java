@@ -70,7 +70,7 @@ public class HtmlResultsPrinter {
         }
 
         printTitle(builder, item, indentLevel);
-        printItemValues(builder, item.getComparisons(), true);
+        printItemValues(builder, item.getComparisons());
     }
 
     private void print(final HtmlBuilder builder,
@@ -81,7 +81,7 @@ public class HtmlResultsPrinter {
         }
 
         printTitle(builder, item, indentLevel);
-        printItemValues(builder, Collections.singletonList(item), false);
+        printItemValues(builder, Collections.singletonList(item));
     }
 
 
@@ -97,10 +97,9 @@ public class HtmlResultsPrinter {
     }
 
     private void printItemValues(final HtmlBuilder builder,
-                                 final List<Comparison> comparisons,
-                                 final boolean colourDifferences) {
+                                 final List<Comparison> comparisons) {
 
-        final HtmlTable table = new ItemValueTableBuilder(fileSizeFormatter, verbose).createComparisonTable(comparisons, colourDifferences);
+        final HtmlTable table = new ItemValueTableBuilder(fileSizeFormatter, verbose).createComparisonTable(comparisons);
         builder.addTable(table);
     }
 }

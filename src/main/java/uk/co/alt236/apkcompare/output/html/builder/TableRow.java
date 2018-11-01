@@ -55,9 +55,20 @@ public class TableRow {
 
     public static class Cell {
         private final String content;
+        private final String id;
 
         public Cell(String content) {
+            this(content, null);
+        }
+
+        public Cell(final String content,
+                    final String id) {
             this.content = content;
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
         }
 
         public String getContent() {

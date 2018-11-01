@@ -10,6 +10,7 @@ import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +28,7 @@ class ItemValueTableBuilder {
         this.verbose = verbose;
     }
 
-    public HtmlTable createComparisonTable(final List<Comparison> comparisons,
-                                           final boolean colourDifferences) {
+    public HtmlTable createComparisonTable(final List<Comparison> comparisons) {
 
 
         final List<String> header = Arrays.asList("", "Status", "APK1", "APK2");
@@ -45,22 +45,19 @@ class ItemValueTableBuilder {
             final String formattedValue1;
             final String formattedValue2;
 
-            final String comparedAttribute = getComparedAttribute(item, colourDifferences);
+            final String comparedAttribute = getComparedAttribute(item);
 
             if (item instanceof ByteCountComparison) {
                 final ByteCountComparison byteRsult = (ByteCountComparison) item;
-                formattedValue1 = combineLine(byteRsult.getValue1() == null ? null : fileSizeFormatter.format(byteRsult.getValue1()));
-                formattedValue2 = combineLine(byteRsult.getValue2() == null ? null : fileSizeFormatter.format(byteRsult.getValue2()));
+                formattedValue1 = fixLine(byteRsult.getValue1() == null ? null : fileSizeFormatter.format(byteRsult.getValue1()));
+                formattedValue2 = fixLine(byteRsult.getValue2() == null ? null : fileSizeFormatter.format(byteRsult.getValue2()));
             } else {
-                formattedValue1 = combineLine(item.getValue1AsString());
-                formattedValue2 = combineLine(item.getValue2AsString());
+                formattedValue1 = fixLine(item.getValue1AsString());
+                formattedValue2 = fixLine(item.getValue2AsString());
             }
 
-            final TableRow tableRow = TableRow.createRowFromStrings(Arrays.asList(
-                    comparedAttribute,
-                    getStatusString(item),
-                    formattedValue1,
-                    formattedValue2));
+            final TableRow tableRow = TableRow.createRowFromCells(
+                    createCellsFromData(comparedAttribute, item.getSimilarity(), formattedValue1, formattedValue2));
 
             tableBuilder.addRow(tableRow);
         }
@@ -68,38 +65,37 @@ class ItemValueTableBuilder {
         return tableBuilder.build();
     }
 
-    private String combineLine(@Nullable final String value) {
+    private String fixLine(@Nullable final String value) {
         return value == null ? MISSING_VALUE : value;
     }
 
     @Nonnull
-    private String getComparedAttribute(final Comparison item, final boolean colorise) {
-        final String comparedAttribute = item.getComparedAttribute() == null
+    private String getComparedAttribute(final Comparison item) {
+        return item.getComparedAttribute() == null
                 ? ""
                 : item.getComparedAttribute();
+    }
 
-        if (comparedAttribute.isEmpty()) {
-            return comparedAttribute;
+    private String getStatusString(final Similarity similarity) {
+        if (similarity == Similarity.IDENTICAL) {
+            return "SAME";
         } else {
-//            if (colorise) {
-//                if (item.getSimilarity() == Similarity.IDENTICAL) {
-//                    return comparedAttribute;
-//                } else {
-//                    return colorizer.error(comparedAttribute);
-//                }
-//            } else {
-            return comparedAttribute;
-//            }
+            return "DIFFERENT";
         }
     }
 
-    private String getStatusString(final Comparison comparison) {
-        if (comparison.getValue1AsString() == null || comparison.getValue2AsString() == null) {
-            return "DIFFERENT";
-        } else if (comparison.getSimilarity() == Similarity.IDENTICAL) {
-            return "OK";
-        } else {
-            return "DIFFERENT";
-        }
+    private List<TableRow.Cell> createCellsFromData(final String comparedAttribute,
+                                                    final Similarity similarity,
+                                                    final String value1,
+                                                    final String value2) {
+
+        final List<TableRow.Cell> cells = new ArrayList<>();
+        cells.add(new TableRow.Cell(comparedAttribute));
+        cells.add(new TableRow.Cell(getStatusString(similarity), (similarity == Similarity.IDENTICAL ? null : "error")));
+        cells.add(new TableRow.Cell(value1, MISSING_VALUE.equals(value1) ? "missing" : null));
+        cells.add(new TableRow.Cell(value2, MISSING_VALUE.equals(value2) ? "missing" : null));
+
+
+        return cells;
     }
 }

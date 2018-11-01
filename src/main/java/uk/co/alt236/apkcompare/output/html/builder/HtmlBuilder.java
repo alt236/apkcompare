@@ -1,6 +1,11 @@
 package uk.co.alt236.apkcompare.output.html.builder;
 
+import java.util.Locale;
+
 public class HtmlBuilder {
+    private static final String TEMPLATE_TAG_WITH_ID = "<%s id='%s'>";
+    private static final String TEMPLATE_TAG_WITHOUT_ID = "<%s>";
+
     private final StringBuilder document;
 
     public HtmlBuilder() {
@@ -56,19 +61,14 @@ public class HtmlBuilder {
 
         final StringBuilder sb = new StringBuilder();
 
-        if (table.getId() == null) {
-            sb.append("<table>");
-        } else {
-            //noinspection StringConcatenationInsideStringBufferAppend
-            sb.append("<table id='" + table.getId() + "'>");
-        }
-
+        sb.append(getTagWithId("table", table.getId()));
         sb.append("\n");
+
         for (final TableRow row : table.getLines()) {
             sb.append("<tr>");
 
             for (final TableRow.Cell cell : row.getCells()) {
-                sb.append(row.isHeader() ? "<th>" : "<td>");
+                sb.append(row.isHeader() ? getTagWithId("th", cell.getId()) : getTagWithId("td", cell.getId()));
                 sb.append(cell.getContent());
                 sb.append(row.isHeader() ? "</th>" : "</td>");
             }
@@ -91,5 +91,13 @@ public class HtmlBuilder {
     public void endHead() {
         document.append("</head>");
         document.append("\n");
+    }
+
+    private String getTagWithId(final String tag, final String id) {
+        if (id == null) {
+            return String.format(Locale.US, TEMPLATE_TAG_WITHOUT_ID, tag, id);
+        } else {
+            return String.format(Locale.US, TEMPLATE_TAG_WITH_ID, tag, id);
+        }
     }
 }
