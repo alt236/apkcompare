@@ -4,6 +4,8 @@ import uk.co.alt236.apkcompare.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
 import uk.co.alt236.apkcompare.output.PrintabilityEvaluator;
+import uk.co.alt236.apkcompare.output.html.builder.HtmlTable;
+import uk.co.alt236.apkcompare.output.html.builder.TableRow;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 
 import javax.annotation.Nonnull;
@@ -31,8 +33,9 @@ class ItemValueTableBuilder {
 
         final List<String> header = Arrays.asList("", "Status", "APK1", "APK2");
         final HtmlTable.Builder tableBuilder = new HtmlTable.Builder(header.size());
+        tableBuilder.setId("comparisons");
 
-        tableBuilder.addLine(header);
+        tableBuilder.addRow(TableRow.createHeaderRowFromStrings(header));
 
         for (final Comparison item : comparisons) {
             if (!printabilityEvaluator.isPrintable(item, verbose)) {
@@ -53,11 +56,13 @@ class ItemValueTableBuilder {
                 formattedValue2 = combineLine(item.getValue2AsString());
             }
 
-            tableBuilder.addLine(Arrays.asList(
+            final TableRow tableRow = TableRow.createRowFromStrings(Arrays.asList(
                     comparedAttribute,
                     getStatusString(item),
                     formattedValue1,
                     formattedValue2));
+
+            tableBuilder.addRow(tableRow);
         }
 
         return tableBuilder.build();

@@ -5,6 +5,8 @@ import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.output.PrintabilityEvaluator;
+import uk.co.alt236.apkcompare.output.html.builder.HtmlBuilder;
+import uk.co.alt236.apkcompare.output.html.builder.HtmlTable;
 import uk.co.alt236.apkcompare.output.writer.FileWriter;
 import uk.co.alt236.apkcompare.output.writer.Writer;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
@@ -29,6 +31,10 @@ public class HtmlResultsPrinter {
         final HtmlBuilder builder = new HtmlBuilder();
 
         builder.startDocument();
+
+        builder.startHead();
+        builder.addStyle(new CssGetter().getStyleSheet());
+        builder.endHead();
 
         for (final ComparisonResult result : results) {
             print(builder, result, 0);

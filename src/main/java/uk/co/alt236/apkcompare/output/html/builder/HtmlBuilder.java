@@ -1,8 +1,6 @@
-package uk.co.alt236.apkcompare.output.html;
+package uk.co.alt236.apkcompare.output.html.builder;
 
-import java.util.List;
-
-class HtmlBuilder {
+public class HtmlBuilder {
     private final StringBuilder document;
 
     public HtmlBuilder() {
@@ -16,6 +14,15 @@ class HtmlBuilder {
 
     public void endDocument() {
         document.append("</html>");
+        document.append("\n");
+    }
+
+    public void addStyle(final String style) {
+        document.append("<style>");
+        document.append("\n");
+        document.append(style);
+        document.append("\n");
+        document.append("</style>");
         document.append("\n");
     }
 
@@ -49,15 +56,21 @@ class HtmlBuilder {
 
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("<table>");
+        if (table.getId() == null) {
+            sb.append("<table>");
+        } else {
+            //noinspection StringConcatenationInsideStringBufferAppend
+            sb.append("<table id='" + table.getId() + "'>");
+        }
+
         sb.append("\n");
-        for (final List<String> line : table.getLines()) {
+        for (final TableRow row : table.getLines()) {
             sb.append("<tr>");
 
-            for (final String column : line) {
-                sb.append("<td>");
-                sb.append(column);
-                sb.append("</td>");
+            for (final TableRow.Cell cell : row.getCells()) {
+                sb.append(row.isHeader() ? "<th>" : "<td>");
+                sb.append(cell.getContent());
+                sb.append(row.isHeader() ? "</th>" : "</td>");
             }
 
             sb.append("</tr>");
@@ -68,5 +81,15 @@ class HtmlBuilder {
         sb.append("\n");
         sb.append("\n");
         document.append(sb);
+    }
+
+    public void startHead() {
+        document.append("<head>");
+        document.append("\n");
+    }
+
+    public void endHead() {
+        document.append("</head>");
+        document.append("\n");
     }
 }
