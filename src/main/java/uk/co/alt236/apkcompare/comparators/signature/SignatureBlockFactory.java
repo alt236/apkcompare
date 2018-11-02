@@ -1,44 +1,42 @@
 package uk.co.alt236.apkcompare.comparators.signature;
 
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
-import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.DateComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.TypedComparison;
 import uk.co.alt236.apkcompare.repo.signature.SigningCertificate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class SignatureBlockFactory {
     List<ComparisonResult> createSignatureInfoBlock(SignatureInfoProvider apk1,
                                                     SignatureInfoProvider apk2) {
         final List<ComparisonResult> retVal = new ArrayList<>();
-        final Comparison signed = new TypedComparison<>(
-                "Signature present",
-                null,
-                apk1.isSigned(),
-                apk2.isSigned());
 
-        final Comparison hasValidSignature = new TypedComparison<>(
-                "Signature valid",
-                null,
-                apk1.isSignatureValid(),
-                apk2.isSignatureValid());
+        final String title = "Validity";
 
-        final Comparison certificateCount = new TypedComparison<>(
-                "Certificate count", null,
-                apk1.getCertificates().size(),
-                apk2.getCertificates().size());
+        final CompositeResult result = new CompositeResult.Builder()
+                .withTitle(title)
+                .withComparison(new TypedComparison<>(
+                        title,
+                        "Signature present",
+                        apk1.isSigned(),
+                        apk2.isSigned()))
+                .withComparison(new TypedComparison<>(
+                        title,
+                        "Signature valid",
+                        apk1.isSignatureValid(),
+                        apk2.isSignatureValid()))
+                .withComparison(new TypedComparison<>(
+                        title,
+                        "Certificate count",
+                        apk1.getCertificates().size(),
+                        apk2.getCertificates().size()))
+                .build();
 
-        final ResultBlock resultBlock = new ResultBlock(
-                "Info",
-                Arrays.asList(signed, hasValidSignature, certificateCount));
 
-        retVal.add(resultBlock);
-
+        retVal.add(result);
         return retVal;
     }
 
