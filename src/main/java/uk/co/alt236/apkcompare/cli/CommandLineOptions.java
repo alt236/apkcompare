@@ -30,4 +30,8 @@ public class CommandLineOptions {
         return commandLine.getOptionValue(OptionsBuilder.ARG_OUTPUT_LONG);
     }
 
+    public boolean isPrettyHtml() {
+        return commandLine.hasOption(OptionsBuilder.ARG_PRETTY_HTML);
+    }
+
 }

@@ -18,6 +18,8 @@ public class OptionsBuilder {
     /*package*/ static final String ARG_HUMAN_READABLE_SIZES = "h";
     /*package*/ static final String ARG_HUMAN_READABLE_SIZES_LONG = "human";
 
+    /*package*/ static final String ARG_PRETTY_HTML = "pretty-html";
+
     private final Strings strings;
 
     public OptionsBuilder(Strings strings) {
@@ -32,6 +34,7 @@ public class OptionsBuilder {
         options.addOption(createOptionOutput());
         options.addOption(createOptionVerbose());
         options.addOption(createOptionHumanReadableSizes());
+        options.addOption(createOptionUglyHtml());
 
         return options;
     }
@@ -80,6 +83,16 @@ public class OptionsBuilder {
         final String desc = strings.getString("cli_cmd_human_readable_sizes");
         return Option.builder(ARG_HUMAN_READABLE_SIZES)
                 .longOpt(ARG_HUMAN_READABLE_SIZES_LONG)
+                .hasArg(false)
+                .required(false)
+                .desc(desc)
+                .build();
+    }
+
+    private Option createOptionUglyHtml() {
+        final String desc = strings.getString("cli_cmd_pretty_html");
+        return Option.builder()
+                .longOpt(ARG_PRETTY_HTML)
                 .hasArg(false)
                 .required(false)
                 .desc(desc)
