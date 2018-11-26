@@ -6,47 +6,47 @@ public class HtmlBuilder {
     private static final String TEMPLATE_TAG_WITH_ID = "<%s id='%s'>";
     private static final String TEMPLATE_TAG_WITHOUT_ID = "<%s>";
 
-    private final StringBuilder document;
+    private final HtmlStringBuilder document;
 
     public HtmlBuilder() {
-        document = new StringBuilder();
+        document = new HtmlStringBuilder();
     }
 
     public void startDocument() {
         document.append("<html>");
-        document.append("\n");
+        document.appendNewLine();
     }
 
     public void endDocument() {
         document.append("</html>");
-        document.append("\n");
+        document.appendNewLine();
     }
 
     public void addStyle(final String style) {
         document.append("<style>");
-        document.append("\n");
-        document.append(style);
-        document.append("\n");
+        document.appendNewLine();
+        document.appendEscapableText(style);
+        document.appendNewLine();
         document.append("</style>");
-        document.append("\n");
+        document.appendNewLine();
     }
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void addHeader(final String header,
                           int level) {
         document.append("<h" + level + ">");
-        document.append(header);
+        document.appendEscapableText(header);
         document.append("</h" + level + ">");
-        document.append("\n");
-        document.append("\n");
+        document.appendNewLine();
+        document.appendNewLine();
     }
 
     public void addTitle(final String title) {
         document.append("<title>");
-        document.append(title);
+        document.appendEscapableText(title);
         document.append("</title>");
-        document.append("\n");
-        document.append("\n");
+        document.appendNewLine();
+        document.appendNewLine();
     }
 
     public String toString() {
@@ -59,43 +59,50 @@ public class HtmlBuilder {
             return;
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final HtmlStringBuilder sb = new HtmlStringBuilder();
 
         sb.append(getTagWithId("table", table.getId()));
-        sb.append("\n");
+        sb.appendNewLine();
 
         for (final TableRow row : table.getLines()) {
             sb.append("<tr>");
 
             for (final TableRow.Cell cell : row.getCells()) {
-                sb.append(row.isHeader() ? getTagWithId("th", cell.getId()) : getTagWithId("td", cell.getId()));
-                sb.append(cell.getContent());
-                sb.append(row.isHeader() ? "</th>" : "</td>");
+                final String openingTag = row.isHeader()
+                        ? getTagWithId("th", cell.getId())
+                        : getTagWithId("td", cell.getId());
+                final String closingTag = row.isHeader()
+                        ? "</th>"
+                        : "</td>";
+
+                sb.append(openingTag);
+                sb.appendEscapableText(cell.getContent());
+                sb.append(closingTag);
             }
 
             sb.append("</tr>");
-            sb.append("\n");
+            sb.appendNewLine();
 
         }
         sb.append("</table>");
-        sb.append("\n");
-        sb.append("\n");
+        sb.appendNewLine();
+        sb.appendNewLine();
         document.append(sb);
     }
 
     public void startHead() {
         document.append("<head>");
-        document.append("\n");
+        document.appendNewLine();
     }
 
     public void endHead() {
         document.append("</head>");
-        document.append("\n");
+        document.appendNewLine();
     }
 
     private String getTagWithId(final String tag, final String id) {
         if (id == null) {
-            return String.format(Locale.US, TEMPLATE_TAG_WITHOUT_ID, tag, id);
+            return String.format(Locale.US, TEMPLATE_TAG_WITHOUT_ID, tag);
         } else {
             return String.format(Locale.US, TEMPLATE_TAG_WITH_ID, tag, id);
         }
