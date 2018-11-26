@@ -4,9 +4,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 class HtmlStringBuilder {
     private final StringBuilder sb;
+    private final boolean prettyHtml;
 
-    HtmlStringBuilder() {
+    HtmlStringBuilder(boolean prettyHtml) {
         sb = new StringBuilder();
+        this.prettyHtml = prettyHtml;
     }
 
     void append(final String value) {
@@ -18,7 +20,9 @@ class HtmlStringBuilder {
     }
 
     void appendNewLine() {
-        sb.append('\n');
+        if (prettyHtml) {
+            sb.append('\n');
+        }
     }
 
     void appendEscapableText(final String val) {

@@ -7,9 +7,11 @@ public class HtmlBuilder {
     private static final String TEMPLATE_TAG_WITHOUT_ID = "<%s>";
 
     private final HtmlStringBuilder document;
+    private final boolean prettyHtml;
 
-    public HtmlBuilder() {
-        document = new HtmlStringBuilder();
+    public HtmlBuilder(final boolean prettyHtml) {
+        this.document = new HtmlStringBuilder(prettyHtml);
+        this.prettyHtml = prettyHtml;
     }
 
     public void startDocument() {
@@ -59,7 +61,7 @@ public class HtmlBuilder {
             return;
         }
 
-        final HtmlStringBuilder sb = new HtmlStringBuilder();
+        final HtmlStringBuilder sb = new HtmlStringBuilder(prettyHtml);
 
         sb.append(getTagWithId("table", table.getId()));
         sb.appendNewLine();

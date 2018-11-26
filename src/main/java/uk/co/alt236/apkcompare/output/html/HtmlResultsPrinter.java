@@ -20,17 +20,20 @@ public class HtmlResultsPrinter {
     private final boolean verbose;
     private final FileSizeFormatter fileSizeFormatter;
     private final PrintabilityEvaluator printabilityEvaluator;
+    private final boolean prettyHtml;
 
     public HtmlResultsPrinter(final FileSizeFormatter fileSizeFormatter,
-                              final boolean verbose) {
+                              final boolean verbose,
+                              final boolean prettyHtml) {
         this.verbose = verbose;
+        this.prettyHtml = prettyHtml;
         this.fileSizeFormatter = fileSizeFormatter;
         this.printabilityEvaluator = new PrintabilityEvaluator();
     }
 
     public void print(final List<ComparisonResult> results,
                       final File file) {
-        final HtmlBuilder builder = new HtmlBuilder();
+        final HtmlBuilder builder = new HtmlBuilder(prettyHtml);
 
         builder.startDocument();
 

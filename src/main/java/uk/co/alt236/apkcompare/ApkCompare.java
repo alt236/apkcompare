@@ -52,12 +52,13 @@ class ApkCompare {
         if (isSaveToFileEnabled) {
             final OutputFileNameFactory fileNameFactory = new OutputFileNameFactory();
             final File htmlFile = new File(cli.getOutputFile(), fileNameFactory.getFileNameForHtmlReport(apk1, apk2));
+            final boolean prettyHml = cli.isPrettyHtml();
 
             //noinspection ResultOfMethodCallIgnored
             htmlFile.getParentFile().mkdirs();
 
             Logger.get().out("* Will save report as " + htmlFile);
-            new HtmlResultsPrinter(fileSizeFormatter, verbose).print(results, htmlFile);
+            new HtmlResultsPrinter(fileSizeFormatter, verbose, prettyHml).print(results, htmlFile);
         }
 
         Logger.get().out("--- DONE ---");
