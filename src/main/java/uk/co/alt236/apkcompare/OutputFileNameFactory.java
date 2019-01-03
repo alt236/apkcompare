@@ -1,15 +1,16 @@
 package uk.co.alt236.apkcompare;
 
 import uk.co.alt236.apkcompare.apk.Apk;
+import uk.co.alt236.apkcompare.output.InputFiles;
 
 class OutputFileNameFactory {
     private static final String SANITISATION_REGEXP = "[^A-Za-z0-9_]";
 
-    public String getFileNameForHtmlReport(final Apk apk1, final Apk apk2) {
+    public String getFileNameForHtmlReport(InputFiles inputFiles) {
         return "compare_"
-                + sanitise(apk1)
+                + sanitise(inputFiles.getApk1())
                 + "_with_"
-                + sanitise(apk2)
+                + sanitise(inputFiles.getApk2())
                 + ".html";
     }
 

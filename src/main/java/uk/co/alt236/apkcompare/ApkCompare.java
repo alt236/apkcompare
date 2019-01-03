@@ -8,6 +8,7 @@ import uk.co.alt236.apkcompare.comparators.file.FileComparator;
 import uk.co.alt236.apkcompare.comparators.file.FileContentsComparator;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.comparators.signature.SignatureComparator;
+import uk.co.alt236.apkcompare.output.InputFiles;
 import uk.co.alt236.apkcompare.output.console.ConsoleResultsPrinter;
 import uk.co.alt236.apkcompare.output.html.HtmlResultsPrinter;
 import uk.co.alt236.apkcompare.output.logging.Logger;
@@ -50,15 +51,16 @@ class ApkCompare {
         new ConsoleResultsPrinter(fileSizeFormatter, colorizer, verbose).print(results);
 
         if (isSaveToFileEnabled) {
+            final InputFiles inputFiles = new InputFiles(apk1, apk2);
             final OutputFileNameFactory fileNameFactory = new OutputFileNameFactory();
-            final File htmlFile = new File(cli.getOutputFile(), fileNameFactory.getFileNameForHtmlReport(apk1, apk2));
+            final File htmlFile = new File(cli.getOutputFile(), fileNameFactory.getFileNameForHtmlReport(inputFiles));
             final boolean prettyHml = cli.isPrettyHtml();
 
             //noinspection ResultOfMethodCallIgnored
             htmlFile.getParentFile().mkdirs();
 
             Logger.get().out("* Will save report as " + htmlFile);
-            new HtmlResultsPrinter(fileSizeFormatter, verbose, prettyHml).print(results, htmlFile);
+            new HtmlResultsPrinter(fileSizeFormatter, verbose, prettyHml).print(results, inputFiles, htmlFile);
         }
 
         Logger.get().out("--- DONE ---");

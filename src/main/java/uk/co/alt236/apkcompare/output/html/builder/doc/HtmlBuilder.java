@@ -1,4 +1,8 @@
-package uk.co.alt236.apkcompare.output.html.builder;
+package uk.co.alt236.apkcompare.output.html.builder.doc;
+
+import uk.co.alt236.apkcompare.output.html.builder.table.HtmlTable;
+import uk.co.alt236.apkcompare.output.html.builder.table.TableRow;
+import uk.co.alt236.apkcompare.output.html.builder.table.cells.Cell;
 
 import java.util.Locale;
 
@@ -69,7 +73,7 @@ public class HtmlBuilder {
         for (final TableRow row : table.getLines()) {
             sb.append("<tr>");
 
-            for (final TableRow.Cell cell : row.getCells()) {
+            for (final Cell cell : row.getCells()) {
                 final String openingTag = row.isHeader()
                         ? getTagWithId("th", cell.getId())
                         : getTagWithId("td", cell.getId());
@@ -78,7 +82,11 @@ public class HtmlBuilder {
                         : "</td>";
 
                 sb.append(openingTag);
-                sb.appendEscapableText(cell.getContent());
+                if (cell.isPreEscaped()) {
+                    sb.append(cell.getContent());
+                } else {
+                    sb.appendEscapableText(cell.getContent());
+                }
                 sb.append(closingTag);
             }
 

@@ -1,4 +1,4 @@
-package uk.co.alt236.apkcompare.output.html.builder;
+package uk.co.alt236.apkcompare.output.html.builder.table;
 
 
 import javax.annotation.Nonnull;
@@ -17,7 +17,6 @@ public class HtmlTable {
         numberOfColumns = builder.numberOfColumns;
         lines = builder.lines;
     }
-
 
     public int getNumberOfColumns() {
         return numberOfColumns;
