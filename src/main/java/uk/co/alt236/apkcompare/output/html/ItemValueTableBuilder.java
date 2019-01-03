@@ -4,8 +4,10 @@ import uk.co.alt236.apkcompare.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.Comparison;
 import uk.co.alt236.apkcompare.output.PrintabilityEvaluator;
-import uk.co.alt236.apkcompare.output.html.builder.HtmlTable;
-import uk.co.alt236.apkcompare.output.html.builder.TableRow;
+import uk.co.alt236.apkcompare.output.html.builder.table.HtmlTable;
+import uk.co.alt236.apkcompare.output.html.builder.table.TableRow;
+import uk.co.alt236.apkcompare.output.html.builder.table.cells.Cell;
+import uk.co.alt236.apkcompare.output.html.builder.table.cells.StringCell;
 import uk.co.alt236.apkcompare.util.FileSizeFormatter;
 
 import javax.annotation.Nonnull;
@@ -76,25 +78,18 @@ class ItemValueTableBuilder {
                 : item.getComparedAttribute();
     }
 
-    private String getStatusString(final Similarity similarity) {
-        if (similarity == Similarity.IDENTICAL) {
-            return "SAME";
-        } else {
-            return "DIFFERENT";
-        }
-    }
+    private List<Cell> createCellsFromData(final String comparedAttribute,
+                                           final Similarity similarity,
+                                           final String value1,
+                                           final String value2) {
 
-    private List<TableRow.Cell> createCellsFromData(final String comparedAttribute,
-                                                    final Similarity similarity,
-                                                    final String value1,
-                                                    final String value2) {
-
-        final List<TableRow.Cell> cells = new ArrayList<>();
-        cells.add(new TableRow.Cell(comparedAttribute));
-        cells.add(new TableRow.Cell(getStatusString(similarity), (similarity == Similarity.IDENTICAL ? null : "error")));
-        cells.add(new TableRow.Cell(value1, MISSING_VALUE.equals(value1) ? "missing" : null));
-        cells.add(new TableRow.Cell(value2, MISSING_VALUE.equals(value2) ? "missing" : null));
-
+        final List<Cell> cells = new ArrayList<>();
+        cells.add(new StringCell(comparedAttribute));
+        cells.add(new StringCell(
+                TableCellIdResolver.getStatusString(similarity),
+                TableCellIdResolver.getIdForSimilarity(similarity)));
+        cells.add(new StringCell(value1, MISSING_VALUE.equals(value1) ? "missing" : null));
+        cells.add(new StringCell(value2, MISSING_VALUE.equals(value2) ? "missing" : null));
 
         return cells;
     }

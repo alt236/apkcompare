@@ -1,4 +1,4 @@
-package uk.co.alt236.apkcompare.output.html.builder;
+package uk.co.alt236.apkcompare.output.html.builder.doc;
 
 import org.apache.commons.lang.StringEscapeUtils;
 

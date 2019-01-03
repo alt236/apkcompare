@@ -1,6 +1,10 @@
-package uk.co.alt236.apkcompare.output.html.builder;
+package uk.co.alt236.apkcompare.output.html.builder.table;
+
+import uk.co.alt236.apkcompare.output.html.builder.table.cells.Cell;
+import uk.co.alt236.apkcompare.output.html.builder.table.cells.StringCell;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TableRow {
@@ -17,7 +21,7 @@ public class TableRow {
         final List<Cell> cells = new ArrayList<>();
 
         for (final String item : items) {
-            cells.add(new Cell(item));
+            cells.add(new StringCell(item));
         }
 
         return createHeaderRowFromCells(cells);
@@ -27,11 +31,15 @@ public class TableRow {
         return createRow(items, true);
     }
 
+    public static TableRow createRowFromStrings(String... items) {
+        return createRowFromStrings(Arrays.asList(items));
+    }
+
     public static TableRow createRowFromStrings(List<String> items) {
         final List<Cell> cells = new ArrayList<>();
 
         for (final String item : items) {
-            cells.add(new Cell(item));
+            cells.add(new StringCell(item));
         }
 
         return createRowFromCells(cells);
@@ -53,27 +61,5 @@ public class TableRow {
         return header;
     }
 
-    public static class Cell {
-        private final String content;
-        private final String id;
-
-        public Cell(String content) {
-            this(content, null);
-        }
-
-        public Cell(final String content,
-                    final String id) {
-            this.content = content;
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getContent() {
-            return content;
-        }
-    }
 }
 
