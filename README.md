@@ -15,6 +15,6 @@ Sample usage:
 
  * blah.jar --file1 ~/tmp/apk1.apk --file2 ~/tmp/apk2.apk
 
-Source code: https://github.com/alt236/apkcompare
-Please report issues at https://github.com/alt236/apkcompare/issues
+Source code: https://github.com/alt236/uk.co.alt236.apkcompare.app.apkcompare
+Please report issues at https://github.com/alt236/uk.co.alt236.apkcompare.app.apkcompare/issues
 ```
