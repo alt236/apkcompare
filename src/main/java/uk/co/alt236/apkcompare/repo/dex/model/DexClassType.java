@@ -52,7 +52,7 @@ public class DexClassType {
 
         final String path;
         if (lastSlash == -1) {
-            path = classType;
+            path = "";
         } else {
             path = classType.substring(0, lastSlash);
         }
@@ -72,5 +72,10 @@ public class DexClassType {
     @Override
     public int hashCode() {
         return Objects.hash(classType);
+    }
+
+    @Override
+    public String toString() {
+        return classType;
     }
 }

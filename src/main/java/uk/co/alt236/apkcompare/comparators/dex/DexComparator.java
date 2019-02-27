@@ -1,6 +1,5 @@
 package uk.co.alt236.apkcompare.comparators.dex;
 
-import com.android.dx.rop.code.AccessFlags;
 import uk.co.alt236.apkcompare.apk.Apk;
 import uk.co.alt236.apkcompare.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.comparators.results.ComparisonResult;
@@ -8,11 +7,14 @@ import uk.co.alt236.apkcompare.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.ByteCountComparison;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.comparators.results.comparisons.TypedComparison;
+import uk.co.alt236.apkcompare.repo.dex.AccessFlagsResolver;
+import uk.co.alt236.apkcompare.repo.dex.DexClassTypeToString;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClass;
 import uk.co.alt236.apkcompare.repo.dex.model.DexClassType;
+import uk.co.alt236.apkcompare.repo.dex.model.DexMethod;
+import uk.co.alt236.apkcompare.repo.dex.model.Parameter;
 import uk.co.alt236.apkcompare.util.Hasher;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 public class DexComparator implements ApkComparator {
@@ -70,8 +72,8 @@ public class DexComparator implements ApkComparator {
         builder.withComparison(new TypedComparison<>(
                 classType.getType(),
                 "Access Flags",
-                class1 == null ? null : getAccessFlags(class1),
-                class2 == null ? null : getAccessFlags(class2)));
+                class1 == null ? null : AccessFlagsResolver.resolve(class1),
+                class2 == null ? null : AccessFlagsResolver.resolve(class2)));
 
         builder.withComparison(new ByteCountComparison(
                 classType.getType(),
@@ -104,6 +106,14 @@ public class DexComparator implements ApkComparator {
                 class2 == null ? null : class2.getNumberOfFields()));
 
 
+        if (class1 != null) {
+            System.out.println(class1.getType().toString());
+
+            class1.getMethods().forEach(method -> {
+                System.out.println("\t" + constructSignature(method));
+            });
+        }
+
         builder.withComparison(smaliComparator.compareClasses(classType));
 
         return builder.build();
@@ -130,18 +140,27 @@ public class DexComparator implements ApkComparator {
         return retVal;
     }
 
-    private String getAccessFlags(@Nonnull DexClass dexClass) {
-        final String result;
-        if (dexClass.isInnerClass()) {
-            result = AccessFlags.innerClassString(dexClass.getAccessFlags());
-        } else {
-            result = AccessFlags.classString(dexClass.getAccessFlags());
-        }
 
-        if ("0000".equals(result)) {
-            return "none";
-        } else {
-            return result;
+    private String constructSignature(DexMethod method) {
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append(AccessFlagsResolver.resolve(method));
+        sb.append(" ");
+        sb.append(DexClassTypeToString.toString(method.getReturnType()));
+        sb.append(" ");
+        sb.append(method.getName());
+        sb.append("(");
+
+        int count = 0;
+        for (final Parameter parameter : method.getParameters()) {
+            if (count > 0) {
+                sb.append(", ");
+            }
+            sb.append(DexClassTypeToString.toString(parameter.getType()));
+            count++;
         }
+        sb.append(")");
+
+        return sb.toString();
     }
 }

@@ -4,7 +4,9 @@ import org.jf.dexlib2.dexbacked.DexBackedClassDef;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DexClass {
@@ -21,6 +23,7 @@ public class DexClass {
     private final long numberOfAnnotations;
     private final long numberOfInterfaces;
     private final int accessFlags;
+    private final List<DexMethod> methods;
 
     private DexClass(final DexBackedClassDef classDef) {
         this.dexClassType = new DexClassType(classDef);
@@ -36,6 +39,8 @@ public class DexClass {
         this.numberOfFields = count(classDef.getFields());
         this.numberOfInterfaces = count(classDef.getInterfaces());
         this.numberOfAnnotations = count(classDef.getAnnotations());
+        this.methods = StreamSupport.stream(classDef.getMethods().spliterator(), false)
+                .map(DexMethod::new).collect(Collectors.toList());
     }
 
     static Set<DexClass> getClasses(final Set<? extends DexBackedClassDef> classes) {
@@ -102,5 +107,9 @@ public class DexClass {
 
     public long getNumberOfInterfaces() {
         return numberOfInterfaces;
+    }
+
+    public List<DexMethod> getMethods() {
+        return methods;
     }
 }
