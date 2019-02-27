@@ -7,3 +7,4 @@ lint.xml
 /input/
 /out/
 /target/
+/test_output/
