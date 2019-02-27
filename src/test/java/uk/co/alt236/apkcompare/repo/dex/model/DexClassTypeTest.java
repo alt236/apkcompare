@@ -43,6 +43,18 @@ public class DexClassTypeTest {
     }
 
     @Test
+    public void parsesVoidCorrectly() {
+        final String classType = "V";
+        final DexClassType dexClassType = new DexClassType(classType);
+
+        assertEquals(classType, dexClassType.getType());
+        assertEquals("V", dexClassType.getClassSimpleName());
+        assertEquals("", dexClassType.getPackageName());
+        assertFalse(dexClassType.isInnerClass());
+        assertFalse(dexClassType.isLambda());
+    }
+
+    @Test
     public void twoClassTypesWithTheSameParameterAreEqual() {
         final String classType1 = "Luk/co/abc/def/ghi/jkl/className$$Lambda$0;";
         final String classType2 = "Luk/co/abc/def/ghi/jkl/className$$Lambda$0;";
