@@ -71,15 +71,21 @@ public class DexComparator implements ApkComparator {
 
         builder.withComparison(new TypedComparison<>(
                 classType.getType(),
-                "Access Flags",
-                class1 == null ? null : AccessFlagsResolver.resolve(class1),
-                class2 == null ? null : AccessFlagsResolver.resolve(class2)));
+                "DEX File",
+                class1 == null ? null : class1.getDexFileName(),
+                class2 == null ? null : class2.getDexFileName()));
 
         builder.withComparison(new ByteCountComparison(
                 classType.getType(),
-                "Class size",
+                "Class Definition Size",
                 class1 == null ? null : class1.getSize(),
                 class2 == null ? null : class2.getSize()));
+
+        builder.withComparison(new TypedComparison<>(
+                classType.getType(),
+                "Access Flags",
+                class1 == null ? null : AccessFlagsResolver.resolve(class1),
+                class2 == null ? null : AccessFlagsResolver.resolve(class2)));
 
         builder.withComparison(new TypedComparison<>(
                 classType.getType(),
