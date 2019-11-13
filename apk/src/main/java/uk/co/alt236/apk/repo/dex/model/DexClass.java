@@ -24,8 +24,11 @@ public class DexClass {
     private final long numberOfInterfaces;
     private final int accessFlags;
     private final List<DexMethod> methods;
+    private final String dexFileName;
 
-    private DexClass(final DexBackedClassDef classDef) {
+    private DexClass(final String dexFileName,
+                     final DexBackedClassDef classDef) {
+        this.dexFileName = dexFileName;
         this.dexClassType = new DexClassType(classDef);
         this.simpleName = dexClassType.getClassSimpleName();
         this.superType = classDef.getSuperclass();
@@ -43,11 +46,12 @@ public class DexClass {
                 .map(DexMethod::new).collect(Collectors.toList());
     }
 
-    static Set<DexClass> getClasses(final Set<? extends DexBackedClassDef> classes) {
+    static Set<DexClass> getClasses(final String dexFileName,
+                                    final Set<? extends DexBackedClassDef> classes) {
         final Set<DexClass> retVal = new HashSet<>(classes.size());
 
         for (final DexBackedClassDef classDef : classes) {
-            retVal.add(new DexClass(classDef));
+            retVal.add(new DexClass(dexFileName, classDef));
         }
 
         return Collections.unmodifiableSet(retVal);
@@ -111,5 +115,9 @@ public class DexClass {
 
     public List<DexMethod> getMethods() {
         return methods;
+    }
+
+    public String getDexFileName() {
+        return dexFileName;
     }
 }
