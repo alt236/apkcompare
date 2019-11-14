@@ -5,6 +5,7 @@ import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import uk.co.alt236.apk.repo.dex.model.DexClass;
 import uk.co.alt236.apk.repo.dex.model.DexClassType;
 import uk.co.alt236.apk.repo.dex.model.DexFile;
+import uk.co.alt236.apk.util.ImmutableCollectors;
 import uk.co.alt236.apk.util.StreamUtils;
 import uk.co.alt236.apk.zip.Entry;
 import uk.co.alt236.apk.zip.ZipContents;
@@ -13,7 +14,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DexRepository {
     private final ZipContents zipContents;
@@ -101,7 +101,7 @@ public class DexRepository {
             final InputStream is = zipContents.getInputStream(entry);
             try {
                 final DexBackedDexFile dexFile = DexBackedDexFile.fromInputStream(Opcodes.getDefault(), is);
-                dexFiles.add(new DexFile(dexFile, entry.getName(), entry.getFileSize()));
+                dexFiles.add(DexFile.Companion.create(dexFile, entry.getName(), entry.getFileSize()));
             } catch (final IOException e) {
                 e.printStackTrace();
             }
@@ -128,6 +128,6 @@ public class DexRepository {
     }
 
     public List<String> getDexFileNames() {
-        return getDexFiles().stream().map(DexFile::getName).collect(Collectors.toList());
+        return getDexFiles().stream().map(DexFile::getName).collect(ImmutableCollectors.toImmutableList());
     }
 }

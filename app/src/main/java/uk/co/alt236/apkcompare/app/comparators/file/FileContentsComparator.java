@@ -1,5 +1,6 @@
 package uk.co.alt236.apkcompare.app.comparators.file;
 
+import org.jetbrains.annotations.NotNull;
 import uk.co.alt236.apk.Apk;
 import uk.co.alt236.apk.util.Hasher;
 import uk.co.alt236.apk.zip.Entry;
@@ -22,7 +23,7 @@ public class FileContentsComparator implements ApkComparator {
     }
 
     @Override
-    public List<ComparisonResult> compare(Apk file1, Apk file2) {
+    public List<ComparisonResult> compare(@Nonnull Apk file1, @Nonnull Apk file2) {
         final List<ComparisonResult> retVal = new ArrayList<>();
 
         final List<ComparisonResult> signatureComparison = compareEntryLists(file1, file2);
@@ -86,5 +87,11 @@ public class FileContentsComparator implements ApkComparator {
         Collections.sort(retVal);
 
         return retVal;
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return "File Contents Comparator";
     }
 }

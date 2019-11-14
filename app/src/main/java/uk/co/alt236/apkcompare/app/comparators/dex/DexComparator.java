@@ -1,5 +1,6 @@
 package uk.co.alt236.apkcompare.app.comparators.dex;
 
+import org.jetbrains.annotations.NotNull;
 import uk.co.alt236.apk.Apk;
 import uk.co.alt236.apk.repo.dex.AccessFlagsResolver;
 import uk.co.alt236.apk.repo.dex.DexClassTypeToString;
@@ -15,28 +16,30 @@ import uk.co.alt236.apkcompare.app.comparators.results.comparisons.ByteCountComp
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.TypedComparison;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class DexComparator implements ApkComparator {
 
+    @Nonnull
     @Override
-    public List<ComparisonResult> compare(Apk file1, Apk file2) {
+    public List<ComparisonResult> compare(@Nonnull Apk apk1, @Nonnull Apk apk2) {
         final List<ComparisonResult> retVal = new ArrayList<>();
 
-        final List<ResultBlock> classComparison = compareClasses(file1, file2);
+        final List<ResultBlock> classComparison = compareClasses(apk1, apk2);
         retVal.add(new ResultBlock("Dex Comparison", classComparison));
 
         return retVal;
     }
 
     private List<ResultBlock> compareClasses(Apk apk1, Apk apk2) {
-        final SmaliComparator smaliComparator = new SmaliComparator(new Hasher(), apk1, apk2);
-        final List<ResultBlock> retVal = new ArrayList<>();
-        final List<ComparisonResult> comparisons = new ArrayList<>();
         final List<DexClassType> classTypeList = getClassTypeList(apk1.getClasses(), apk2.getClasses());
+        final SmaliComparator smaliComparator = new SmaliComparator(new Hasher(), apk1, apk2);
+
+        final List<ComparisonResult> comparisons = new ArrayList<>();
+        final List<ResultBlock> retVal = new ArrayList<>();
 
         for (final DexClassType classType : classTypeList) {
-
             final CompositeResult result = compare(classType, apk1, apk2, smaliComparator);
             comparisons.add(result);
         }
@@ -168,5 +171,11 @@ public class DexComparator implements ApkComparator {
         sb.append(")");
 
         return sb.toString();
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return "Dex Comparator";
     }
 }

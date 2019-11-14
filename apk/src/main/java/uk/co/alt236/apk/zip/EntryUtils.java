@@ -1,7 +1,8 @@
 package uk.co.alt236.apk.zip;
 
+import uk.co.alt236.apk.util.ImmutableCollectors;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class EntryUtils {
 
@@ -9,6 +10,6 @@ public final class EntryUtils {
         return entries
                 .stream()
                 .map(Entry::getName)
-                .collect(Collectors.toList());
+                .collect(ImmutableCollectors.toImmutableList());
     }
 }

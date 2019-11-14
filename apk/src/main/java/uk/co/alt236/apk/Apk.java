@@ -95,6 +95,7 @@ public class Apk {
         return dexRepository.getClassByType(classType);
     }
 
+    @Nullable
     public String getSmaliForClassType(final DexClassType classType) {
         return smaliRepository.getSmaliForType(classType);
     }

@@ -27,11 +27,10 @@ class SmaliComparator {
         final String apk1ClassContents = apk1.getSmaliForClassType(classType);
         final String apk2ClassContents = apk2.getSmaliForClassType(classType);
 
-
         return new TypedComparison<>(
                 classType.getType(),
                 "Smali SHA256",
-                apk1ClassContents == null ? null : hasher.sha256Hex(apk1ClassContents.getBytes()),
-                apk2ClassContents == null ? null : hasher.sha256Hex(apk2ClassContents.getBytes()));
+                apk1ClassContents == null ? null : hasher.sha256Hex(apk1ClassContents),
+                apk2ClassContents == null ? null : hasher.sha256Hex(apk2ClassContents));
     }
 }

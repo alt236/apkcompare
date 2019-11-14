@@ -16,8 +16,6 @@ public final class ApkFactory {
         final SignatureV2Repository signatureV2Repository = new SignatureV2Repository(file);
         final DexRepository dexRepository = new DexRepository(zipContents);
         final SmaliRepository smaliRepository = new SmaliRepository(file, dexRepository);
-
-
         return new Apk(file, zipContents, signatureV1Repository, signatureV2Repository, dexRepository, smaliRepository);
     }
 }

@@ -1,5 +1,6 @@
 package uk.co.alt236.apk.zip;
 
+import uk.co.alt236.apk.util.ImmutableCollectors;
 import uk.co.alt236.apk.util.StreamUtils;
 
 import javax.annotation.Nonnull;
@@ -13,7 +14,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -71,7 +71,7 @@ public class ZipContents {
         return entryList
                 .stream()
                 .filter(predicate)
-                .collect(Collectors.toList());
+                .collect(ImmutableCollectors.toImmutableList());
     }
 
     public synchronized InputStream getInputStream(final Entry entry) {
