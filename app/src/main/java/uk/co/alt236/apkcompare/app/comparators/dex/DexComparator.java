@@ -40,18 +40,18 @@ public class DexComparator implements ApkComparator {
         final List<ResultBlock> retVal = new ArrayList<>();
 
         for (final DexClassType classType : classTypeList) {
-            final CompositeResult result = compare(classType, apk1, apk2, smaliComparator);
+            final ComparisonResult result = compare(classType, apk1, apk2, smaliComparator);
             comparisons.add(result);
         }
 
-        retVal.add(new ResultBlock("Class Comparison", comparisons));
+        retVal.add(new ResultBlock("Class Comparison", comparisons, true));
         return retVal;
     }
 
-    private CompositeResult compare(DexClassType classType,
-                                    Apk apk1,
-                                    Apk apk2,
-                                    SmaliComparator smaliComparator) {
+    private ComparisonResult compare(DexClassType classType,
+                                     Apk apk1,
+                                     Apk apk2,
+                                     SmaliComparator smaliComparator) {
 
         final DexClass class1 = apk1.getClassByType(classType);
         final DexClass class2 = apk2.getClassByType(classType);

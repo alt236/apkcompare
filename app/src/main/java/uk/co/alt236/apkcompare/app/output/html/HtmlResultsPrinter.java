@@ -29,7 +29,6 @@ public class HtmlResultsPrinter {
     private final boolean prettyHtml;
     private final FileSizeFormatter fileSizeFormatter;
     private final PrintabilityEvaluator printabilityEvaluator;
-    private final FileFactory fileFactory;
 
     public HtmlResultsPrinter(final FileSizeFormatter fileSizeFormatter,
                               final boolean verbose,
@@ -38,23 +37,24 @@ public class HtmlResultsPrinter {
         this.prettyHtml = prettyHtml;
         this.fileSizeFormatter = fileSizeFormatter;
         this.printabilityEvaluator = new PrintabilityEvaluator();
-        this.fileFactory = new FileFactory();
     }
 
     public void print(final List<ComparisonResult> results,
                       final InputFiles inputFiles,
                       final File rootFile) {
-        createRootFile(results, inputFiles, rootFile);
+        final FileFactory fileFactory = new FileFactory(rootFile);
+
+        createRootFile(fileFactory, inputFiles, results);
 
         for (final ComparisonResult result : results) {
-            createResultFile(result, inputFiles, fileFactory.getResultHtmlFile(result, rootFile));
+            createResultFile(fileFactory, inputFiles, result);
         }
     }
 
 
-    private void createRootFile(final List<ComparisonResult> results,
-                                InputFiles inputFiles,
-                                final File rootFile) {
+    private void createRootFile(final FileFactory fileFactory,
+                                final InputFiles inputFiles,
+                                final List<ComparisonResult> results) {
         final HtmlBuilder builder = new HtmlBuilder(prettyHtml);
 
         builder.startDocument();
@@ -73,8 +73,8 @@ public class HtmlResultsPrinter {
         for (final ComparisonResult result : results) {
             final Similarity similarity = result.getSimilarity();
 
-            final File comparisonFile = fileFactory.getResultHtmlFile(result, rootFile);
-            final String fileLink = fileFactory.getRelativeLink(result, rootFile);
+            final File comparisonFile = fileFactory.getResultHtmlFile(result);
+            final String fileLink = fileFactory.getLinkRelativeToRoot(result);
             createFile(comparisonFile);
 
             final HtmlLink htmlLink = new HtmlLink(fileLink, result.getTitle());
@@ -90,14 +90,14 @@ public class HtmlResultsPrinter {
         builder.addTable(tableBuilder.build());
         builder.endDocument();
 
-        final Writer writer = new FileWriter(rootFile);
+        final Writer writer = new FileWriter(fileFactory.getRootFile());
         writer.outln(builder.toString());
         writer.close();
     }
 
-    private void createResultFile(final ComparisonResult result,
+    private void createResultFile(final FileFactory fileFactory,
                                   final InputFiles inputFiles,
-                                  final File htmlFile) {
+                                  final ComparisonResult result) {
         final HtmlBuilder builder = new HtmlBuilder(prettyHtml);
 
         builder.startDocument();
@@ -107,13 +107,38 @@ public class HtmlResultsPrinter {
 
         addComparedFilesHeader(builder, inputFiles);
 
-        print(builder, result, 0);
+        print(fileFactory, inputFiles, builder, result, 0);
+
+        builder.endDocument();
+
+        final File file = fileFactory.getResultHtmlFile(result);
+        final Writer writer = new FileWriter(file);
+        writer.outln(builder.toString());
+        writer.close();
+    }
+
+
+    private void createResultSubFile(final FileFactory fileFactory,
+                                     final InputFiles inputFiles,
+                                     final ComparisonResult result,
+                                     final File htmlFile) {
+
+        final HtmlBuilder builder = new HtmlBuilder(prettyHtml);
+        builder.startDocument();
+        builder.startHead();
+        builder.addStyle(new CssGetter().getStyleSheet());
+        builder.endHead();
+
+        addComparedFilesHeader(builder, inputFiles);
+
+        print(fileFactory, inputFiles, builder, result, 0);
 
         builder.endDocument();
 
         final Writer writer = new FileWriter(htmlFile);
         writer.outln(builder.toString());
         writer.close();
+
     }
 
     private void addComparedFilesHeader(final HtmlBuilder builder,
@@ -135,19 +160,68 @@ public class HtmlResultsPrinter {
         }
     }
 
-    private void print(final HtmlBuilder builder, final ComparisonResult item, final int indentLevel) {
+    private void print(final FileFactory fileFactory,
+                       final InputFiles inputFiles,
+                       final HtmlBuilder builder,
+                       final ComparisonResult item,
+                       final int indentLevel) {
+
         if (item instanceof Comparison) {
             print(builder, (Comparison) item, indentLevel);
         } else if (item instanceof ResultBlock) {
             printTitle(builder, item, indentLevel);
-            for (final ComparisonResult child : ((ResultBlock) item).getComparisonResults()) {
-                print(builder, child, indentLevel + 1);
+
+            final ResultBlock resultBlock = (ResultBlock) item;
+            if (resultBlock.getComplex()) {
+                addComplexResultBlockToc(fileFactory, builder, resultBlock);
+
+                for (ComparisonResult result : resultBlock.getComparisonResults()) {
+                    if (!printabilityEvaluator.isPrintable(item, verbose)) {
+                        continue;
+                    }
+
+                    final File file = fileFactory.getResultHtmlFile(result);
+                    createResultSubFile(fileFactory, inputFiles, result, file);
+                }
+            } else {
+                for (final ComparisonResult child : ((ResultBlock) item).getComparisonResults()) {
+                    print(fileFactory, inputFiles, builder, child, indentLevel + 1);
+                }
             }
         } else if (item instanceof CompositeResult) {
             print(builder, (CompositeResult) item, indentLevel);
         } else {
             throw new IllegalStateException("Don't know how to handle: " + item);
         }
+    }
+
+
+    private void addComplexResultBlockToc(final FileFactory fileFactory,
+                                          final HtmlBuilder builder,
+                                          final ResultBlock resultBlock) {
+
+        final List<String> header = Arrays.asList("Class", "Similarity");
+        final HtmlTable.Builder tableBuilder = new HtmlTable.Builder(header.size());
+        tableBuilder.setId("comparisons");
+        tableBuilder.addRow(TableRow.createHeaderRowFromStrings(header));
+
+        for (ComparisonResult result : resultBlock.getComparisonResults()) {
+            if (!printabilityEvaluator.isPrintable(result, verbose)) {
+                continue;
+            }
+
+            final String fileLink = fileFactory.getLinkRelativeToFiles(result);
+            final Similarity similarity = result.getSimilarity();
+
+            final HtmlLink htmlLink = new HtmlLink(fileLink, result.getTitle());
+            final TableRow tableRow = TableRow.createRowFromCells(Arrays.asList(
+                    new LinkCell(htmlLink),
+                    new StringCell(
+                            TableCellIdResolver.getStatusString(similarity),
+                            TableCellIdResolver.getIdForSimilarity(similarity))));
+            tableBuilder.addRow(tableRow);
+        }
+        builder.addTable(tableBuilder.build());
     }
 
     private void print(final HtmlBuilder builder,
