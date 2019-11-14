@@ -9,6 +9,7 @@ import uk.co.alt236.apkcompare.app.comparators.file.FileContentsComparator;
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
 import uk.co.alt236.apkcompare.app.comparators.signature.SignatureComparator;
 import uk.co.alt236.apkcompare.app.output.InputFiles;
+import uk.co.alt236.apkcompare.app.output.console.ConsoleResultsPrinter;
 import uk.co.alt236.apkcompare.app.output.html.HtmlResultsPrinter;
 import uk.co.alt236.apkcompare.app.output.logging.Logger;
 import uk.co.alt236.apkcompare.app.output.writer.FileWriter;
@@ -41,13 +42,14 @@ class ApkCompare {
         final List<ComparisonResult> results = new ArrayList<>();
 
         for (final ApkComparator comparator : comparatorList) {
+            Logger.get().out("* Running: " + comparator.getName());
             results.addAll(comparator.compare(apk1, apk2));
         }
 
         apk1.close();
         apk2.close();
 
-        //new ConsoleResultsPrinter(fileSizeFormatter, colorizer, verbose).print(results);
+        Logger.get().out("* Parsing complete");
 
         if (isSaveToFileEnabled) {
             final InputFiles inputFiles = new InputFiles(apk1, apk2);
@@ -60,6 +62,8 @@ class ApkCompare {
 
             Logger.get().out("* Will save report as " + htmlFile);
             new HtmlResultsPrinter(fileSizeFormatter, verbose, prettyHml).print(results, inputFiles, htmlFile);
+        } else {
+            new ConsoleResultsPrinter(fileSizeFormatter, colorizer, verbose).print(results);
         }
 
         Logger.get().out("--- DONE ---");
