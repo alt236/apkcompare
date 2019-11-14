@@ -8,3 +8,4 @@ lint.xml
 /out/
 /target/
 /test_output/
+*.iml
