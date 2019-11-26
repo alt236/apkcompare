@@ -1,14 +1,19 @@
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
+    font-family: monospace, monospace;
 }
 th, td {
     padding: 12px;
     text-align: left;
     white-space: nowrap;
+    font-family: monospace, monospace;
 }
 table#comparisons {
     width: 30%;
+}
+h1, h2, h3, h4, h5 {
+    font-family: monospace, monospace;
 }
 
 #comparisons th {
@@ -19,10 +24,18 @@ table#comparisons {
     color: white;
 }
 
-td#error {
+td#value_error {
     background-color: #FF7F50;
 }
 
-td#missing {
+td#value_missing {
     background-color: #FFBF00;
+}
+
+td#value_present {
+    background-color: #b3d80f;
+}
+
+td#value_indeterminate {
+    background-color: #3abeff;
 }

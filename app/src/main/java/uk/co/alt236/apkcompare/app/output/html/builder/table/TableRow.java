@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class TableRow {
     private final List<Cell> cells;
     private final boolean header;
@@ -43,6 +44,10 @@ public class TableRow {
         }
 
         return createRowFromCells(cells);
+    }
+
+    public static TableRow createRowFromCells(Cell... items) {
+        return createRow(Arrays.asList(items), false);
     }
 
     public static TableRow createRowFromCells(List<Cell> items) {

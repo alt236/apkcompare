@@ -59,7 +59,7 @@ data class DexClass internal constructor(val dexFileName: String,
                     numberOfInterfaces = count(classDef.interfaces),
                     numberOfAnnotations = count(classDef.annotations),
                     methods = StreamSupport.stream(classDef.methods.spliterator(), false)
-                            .map { DexMethod.create(it) }.collect(ImmutableCollectors.toImmutableList())
+                            .map { DexMethod.create(dexClassType, it) }.collect(ImmutableCollectors.toImmutableList())
             )
         }
     }

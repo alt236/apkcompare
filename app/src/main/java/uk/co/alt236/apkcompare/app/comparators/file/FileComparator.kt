@@ -4,9 +4,9 @@ import uk.co.alt236.apk.Apk
 import uk.co.alt236.apk.util.Hasher
 import uk.co.alt236.apkcompare.app.comparators.ApkComparator
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult
-import uk.co.alt236.apkcompare.app.comparators.results.ResultBlock
-import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.TypedComparison
+import uk.co.alt236.apkcompare.app.comparators.results.groups.CompositeResult
+import uk.co.alt236.apkcompare.app.comparators.results.groups.ResultBlock
 import java.util.*
 
 class FileComparator : ApkComparator {

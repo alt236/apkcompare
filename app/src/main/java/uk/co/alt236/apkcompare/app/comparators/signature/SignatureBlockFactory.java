@@ -2,9 +2,9 @@ package uk.co.alt236.apkcompare.app.comparators.signature;
 
 import uk.co.alt236.apk.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.DateComparison;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.TypedComparison;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.CompositeResult;
 
 import java.util.ArrayList;
 import java.util.List;

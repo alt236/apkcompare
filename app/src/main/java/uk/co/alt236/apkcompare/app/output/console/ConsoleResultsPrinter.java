@@ -1,10 +1,10 @@
 package uk.co.alt236.apkcompare.app.output.console;
 
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.app.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.app.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.Comparison;
-import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.CompositeResult;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.ResultBlock;
 import uk.co.alt236.apkcompare.app.output.PrintabilityEvaluator;
 import uk.co.alt236.apkcompare.app.output.logging.Logger;
 import uk.co.alt236.apkcompare.app.util.Colorizer;
