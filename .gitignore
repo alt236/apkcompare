@@ -9,3 +9,5 @@ lint.xml
 /target/
 /test_output/
 *.iml
+/app/target/
+/apk/target/

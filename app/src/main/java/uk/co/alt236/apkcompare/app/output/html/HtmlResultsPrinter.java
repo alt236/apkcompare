@@ -1,16 +1,18 @@
 package uk.co.alt236.apkcompare.app.output.html;
 
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.app.comparators.results.ResultBlock;
+import uk.co.alt236.apkcompare.app.comparators.results.MissingValue;
 import uk.co.alt236.apkcompare.app.comparators.results.Similarity;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.Comparison;
-import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.CompositeResult;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.ResultBlock;
 import uk.co.alt236.apkcompare.app.output.InputFiles;
 import uk.co.alt236.apkcompare.app.output.PrintabilityEvaluator;
 import uk.co.alt236.apkcompare.app.output.html.builder.doc.HtmlBuilder;
 import uk.co.alt236.apkcompare.app.output.html.builder.doc.HtmlLink;
 import uk.co.alt236.apkcompare.app.output.html.builder.table.HtmlTable;
 import uk.co.alt236.apkcompare.app.output.html.builder.table.TableRow;
+import uk.co.alt236.apkcompare.app.output.html.builder.table.cells.Cell;
 import uk.co.alt236.apkcompare.app.output.html.builder.table.cells.LinkCell;
 import uk.co.alt236.apkcompare.app.output.html.builder.table.cells.StringCell;
 import uk.co.alt236.apkcompare.app.output.writer.FileWriter;
@@ -200,7 +202,7 @@ public class HtmlResultsPrinter {
                                           final HtmlBuilder builder,
                                           final ResultBlock resultBlock) {
 
-        final List<String> header = Arrays.asList("Class", "Similarity");
+        final List<String> header = Arrays.asList("Similarity", "APK1", "APK2", "Class");
         final HtmlTable.Builder tableBuilder = new HtmlTable.Builder(header.size());
         tableBuilder.setId("comparisons");
         tableBuilder.addRow(TableRow.createHeaderRowFromStrings(header));
@@ -212,13 +214,23 @@ public class HtmlResultsPrinter {
 
             final String fileLink = fileFactory.getLinkRelativeToFiles(result);
             final Similarity similarity = result.getSimilarity();
+            final MissingValue missingValue = result.getMissingValue();
 
             final HtmlLink htmlLink = new HtmlLink(fileLink, result.getTitle());
-            final TableRow tableRow = TableRow.createRowFromCells(Arrays.asList(
-                    new LinkCell(htmlLink),
-                    new StringCell(
-                            TableCellIdResolver.getStatusString(similarity),
-                            TableCellIdResolver.getIdForSimilarity(similarity))));
+            final Cell classNameCell = new LinkCell(htmlLink);
+            final Cell similarityCell = new StringCell(
+                    TableCellIdResolver.getStatusString(similarity),
+                    TableCellIdResolver.getIdForSimilarity(similarity));
+
+            final Cell apk1Status = new StringCell(
+                    TableCellIdResolver.getMissingValueStringForApk1(missingValue),
+                    TableCellIdResolver.getMissingValueIdForApk1(missingValue));
+            final Cell apk2Status = new StringCell(
+                    TableCellIdResolver.getMissingValueStringForApk2(missingValue),
+                    TableCellIdResolver.getMissingValueIdForApk2(missingValue));
+
+            final TableRow tableRow = TableRow.createRowFromCells(similarityCell, apk1Status, apk2Status, classNameCell);
+
             tableBuilder.addRow(tableRow);
         }
         builder.addTable(tableBuilder.build());

@@ -3,7 +3,7 @@ package uk.co.alt236.apkcompare.app.comparators.signature;
 import uk.co.alt236.apk.Apk;
 import uk.co.alt236.apk.repo.signature.SigningCertificate;
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.app.comparators.results.ResultBlock;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.ResultBlock;
 
 import java.util.ArrayList;
 import java.util.List;

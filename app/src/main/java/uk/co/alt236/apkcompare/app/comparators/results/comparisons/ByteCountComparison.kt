@@ -1,79 +1,35 @@
-package uk.co.alt236.apkcompare.app.comparators.results.comparisons;
+package uk.co.alt236.apkcompare.app.comparators.results.comparisons
 
 
-import uk.co.alt236.apkcompare.app.comparators.results.Similarity;
+import uk.co.alt236.apkcompare.app.comparators.results.EnumEvaluators
+import uk.co.alt236.apkcompare.app.comparators.results.MissingValue
+import uk.co.alt236.apkcompare.app.comparators.results.Similarity
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+class ByteCountComparison(override val title: String,
+                          override val comparedAttribute: String?,
+                          val value1: Long?,
+                          val value2: Long?) : Comparison {
 
-public class ByteCountComparison implements Comparison {
+    override val missingValue: MissingValue by lazy { EnumEvaluators.evaluateMissingValue(this) }
 
-    private final String title;
-    private final Long value1;
-    private final Long value2;
-    private final String comparedAttribute;
+    override val value1AsString = value1?.toString()
 
-    public ByteCountComparison(@Nonnull String title,
-                               @Nullable String comparedAttribute,
-                               @Nullable Long value1,
-                               @Nullable Long value2) {
-        this.title = title;
-        this.comparedAttribute = comparedAttribute;
-        this.value1 = value1;
-        this.value2 = value2;
-    }
+    override val value2AsString = value2?.toString()
 
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Nullable
-    @Override
-    public String getValue1AsString() {
-        return value1 == null ? null : String.valueOf(value1);
-    }
-
-    @Nullable
-    @Override
-    public String getValue2AsString() {
-        return value2 == null ? null : String.valueOf(value2);
-    }
-
-    @Nullable
-    @Override
-    public String getComparedAttribute() {
-        return comparedAttribute;
-    }
-
-    @Nullable
-    public Long getValue1() {
-        return value1;
-    }
-
-    @Nullable
-    public Long getValue2() {
-        return value2;
-    }
-
-    @Override
-    public Similarity getSimilarity() {
-        if (equals(value1, value2)) {
-            return Similarity.IDENTICAL;
+    override val similarity: Similarity
+        get() = if (equals(value1, value2)) {
+            Similarity.IDENTICAL
         } else {
-            return Similarity.DIFFERENT;
+            Similarity.DIFFERENT
         }
-    }
 
-    private boolean equals(Long val1, Long val2) {
-        //noinspection NumberEquality
-        if (val1 == val2) {
-            return true;
+    private fun equals(val1: Long?, val2: Long?): Boolean {
+        return if (val1 === val2) {
+            true
         } else if (val1 != null && val2 != null) {
-            return val1.equals(val2);
+            val1 == val2
         } else {
-            return false;
+            false
         }
     }
 }

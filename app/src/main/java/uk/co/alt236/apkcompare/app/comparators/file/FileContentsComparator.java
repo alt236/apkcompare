@@ -6,10 +6,10 @@ import uk.co.alt236.apk.util.Hasher;
 import uk.co.alt236.apk.zip.Entry;
 import uk.co.alt236.apkcompare.app.comparators.ApkComparator;
 import uk.co.alt236.apkcompare.app.comparators.results.ComparisonResult;
-import uk.co.alt236.apkcompare.app.comparators.results.ResultBlock;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.ByteCountComparison;
-import uk.co.alt236.apkcompare.app.comparators.results.comparisons.CompositeResult;
 import uk.co.alt236.apkcompare.app.comparators.results.comparisons.TypedComparison;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.CompositeResult;
+import uk.co.alt236.apkcompare.app.comparators.results.groups.ResultBlock;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -22,6 +22,7 @@ public class FileContentsComparator implements ApkComparator {
         hasher = new Hasher();
     }
 
+    @NotNull
     @Override
     public List<ComparisonResult> compare(@Nonnull Apk file1, @Nonnull Apk file2) {
         final List<ComparisonResult> retVal = new ArrayList<>();

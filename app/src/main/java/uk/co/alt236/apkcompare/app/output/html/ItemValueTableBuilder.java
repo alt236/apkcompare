@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 class ItemValueTableBuilder {
     private static final String MISSING_VALUE = "*** MISSING ***";
 
@@ -88,8 +89,8 @@ class ItemValueTableBuilder {
         cells.add(new StringCell(
                 TableCellIdResolver.getStatusString(similarity),
                 TableCellIdResolver.getIdForSimilarity(similarity)));
-        cells.add(new StringCell(value1, MISSING_VALUE.equals(value1) ? "missing" : null));
-        cells.add(new StringCell(value2, MISSING_VALUE.equals(value2) ? "missing" : null));
+        cells.add(new StringCell(value1, MISSING_VALUE.equals(value1) ? TableCellIdResolver.TABLE_ID_VALUE_MISSING : null));
+        cells.add(new StringCell(value2, MISSING_VALUE.equals(value2) ? TableCellIdResolver.TABLE_ID_VALUE_MISSING : null));
 
         return cells;
     }
