@@ -1,0 +1,6 @@
+rootProject.name = 'apkcompare'
+include ':apk'
+include ':app'
+
+project(':apk').projectDir = "$rootDir/apk" as File
+project(':app').projectDir = "$rootDir/app" as File
