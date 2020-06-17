@@ -1,0 +1,18 @@
+plugins {
+    id "java-library"
+    id "kotlin"
+}
+
+description = ""
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    compile "org.smali:dexlib2:2.2.5"
+    compile "org.smali:baksmali:2.2.5"
+    compile "commons-codec:commons-codec:1.11"
+
+    testCompile "junit:junit:$junit_version"
+    testCompile "org.mockito:mockito-core:$mockito_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+}

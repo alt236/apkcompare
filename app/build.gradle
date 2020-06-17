@@ -1,0 +1,32 @@
+plugins {
+  id "java-library"
+  id "kotlin"
+}
+
+group = 'uk.co.alt236.apkcompare'
+description = ''
+
+jar {
+  baseName = 'apkcompare'
+  version =  '0.1.0'
+
+  manifest {
+    attributes 'Main-Class': 'uk.co.alt236.apkcompare.app.Main'
+  }
+}
+
+dependencies {
+  compile project(':apk')
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+  compile "commons-cli:commons-cli:1.4"
+  compile "xerces:xercesImpl:2.11.0"
+  compile "commons-io:commons-io:2.6"
+  compile "commons-lang:commons-lang:2.6"
+  compile "com.google.code.findbugs:jsr305:3.0.2"
+
+  testCompile "junit:junit:$junit_version"
+  testCompile "org.mockito:mockito-core:$mockito_version"
+  testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+}
+
