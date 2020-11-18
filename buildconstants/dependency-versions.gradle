@@ -2,11 +2,20 @@ ext {
     // kotlin
     kotlin_version = "1.3.72"
 
+    // Libs
+    commons_cli_version = "1.4"
+    commons_io_version = "2.6"
+    commons_lang_version = "2.6"
+    commons_codec_version = "1.10"
+    xerces_version = "2.11.0"
+    smali_version = "2.4.0"
+
     // testing
     mockito_version = "2.22.0"
     mockito_kotlin_version = "2.1.0"
     junit_version = "4.12"
 
     // code quality
+    jsr_305_version = "3.0.2"
     jacoco_version = "0.8.5"
 }
