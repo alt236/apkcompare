@@ -8,9 +8,9 @@ description = ""
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compile "org.smali:dexlib2:2.2.5"
-    compile "org.smali:baksmali:2.2.5"
-    compile "commons-codec:commons-codec:1.11"
+    compile "org.smali:dexlib2:$smali_version"
+    compile "org.smali:baksmali:$smali_version"
+    compile "commons-codec:commons-codec:$commons_codec_version"
 
     testCompile "junit:junit:$junit_version"
     testCompile "org.mockito:mockito-core:$mockito_version"

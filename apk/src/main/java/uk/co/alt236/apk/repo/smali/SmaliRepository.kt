@@ -4,8 +4,9 @@ import org.jf.baksmali.Adaptors.ClassDefinition
 import org.jf.baksmali.BaksmaliOptions
 import org.jf.dexlib2.DexFileFactory
 import org.jf.dexlib2.Opcodes
+import org.jf.dexlib2.dexbacked.DexBackedDexFile
 import org.jf.dexlib2.iface.ClassDef
-import org.jf.dexlib2.iface.DexFile
+import org.jf.dexlib2.iface.MultiDexContainer
 import org.jf.util.IndentingWriter
 import uk.co.alt236.apk.repo.dex.DexRepository
 import uk.co.alt236.apk.repo.dex.model.DexClassType
@@ -22,7 +23,7 @@ class SmaliRepository(private val file: File,
 
         for (name in dexRepository.dexFileNames) {
             val dexFile = readDex(file, name)
-            for (classDef in dexFile.classes) {
+            for (classDef in dexFile.dexFile.classes) {
                 map[classDef.type] = classDef
             }
         }
@@ -48,7 +49,7 @@ class SmaliRepository(private val file: File,
     }
 
 
-    private fun readDex(apk: File, name: String): DexFile {
+    private fun readDex(apk: File, name: String): MultiDexContainer.DexEntry<out DexBackedDexFile> {
         return DexFileFactory.loadDexEntry(apk, name, true, Opcodes.getDefault())
     }
 }

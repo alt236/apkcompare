@@ -19,11 +19,11 @@ dependencies {
   compile project(':apk')
   compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-  compile "commons-cli:commons-cli:1.4"
-  compile "xerces:xercesImpl:2.11.0"
-  compile "commons-io:commons-io:2.6"
-  compile "commons-lang:commons-lang:2.6"
-  compile "com.google.code.findbugs:jsr305:3.0.2"
+  compile "xerces:xercesImpl:$xerces_version"
+  compile "commons-cli:commons-cli:$commons_cli_version"
+  compile "commons-io:commons-io:$commons_io_version"
+  compile "commons-lang:commons-lang:$commons_lang_version"
+  compile "com.google.code.findbugs:jsr305:$jsr_305_version"
 
   testCompile "junit:junit:$junit_version"
   testCompile "org.mockito:mockito-core:$mockito_version"
